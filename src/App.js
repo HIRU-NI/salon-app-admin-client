@@ -15,6 +15,7 @@ import {
   Routes
 } from "react-router-dom";
 
+
 function App() {
   return (
     <>
@@ -25,7 +26,6 @@ function App() {
           <Route path="/signup" element={<Signup />} />
       </Routes>
     </>
-    
   );
 }
 
