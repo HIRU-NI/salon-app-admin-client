@@ -5,9 +5,6 @@ import { Link } from "react-router-dom";
 //antd components
 import { PageHeader, Button } from 'antd';
 
-
-
-
 const Navbar = () => {
   return (
     <PageHeader
