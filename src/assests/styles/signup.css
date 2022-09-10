@@ -1,4 +1,17 @@
-.navbar_main {
-    margin-top: 10%;
-    padding:0% 30%
+.signup_main {
+    margin-top: 5% !important;
+    padding:0% 20% !important;
+}
+
+.signup_titile {
+    text-align: center;
+    margin-bottom: 20px !important;
+}
+
+@media (min-width: 800px) {
+    .signup_main {
+        margin-top: 5% !important;
+        padding:0% 30% !important;
+    }
+    
 }

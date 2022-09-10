@@ -12,11 +12,11 @@ const Navbar = () => {
     title="Salon Prauge Admin"
     extra={[
         (
-        <Link to="/login">
+        <Link to="/login" key="login">
             <Button key="2">Login</Button>
         </Link>)
         ,
-        (<Link to="/signup">
+        (<Link to="/signup" key="signup">
             <Button key="1" type="primary">Signup</Button>
         </Link>)
       ]}
