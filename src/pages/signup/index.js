@@ -1,7 +1,19 @@
-import {React} from 'react'
+import {React, useEffect} from 'react'
+
+//redux
+import { useSelector, useDispatch } from 'react-redux';
+
+//api functions 
+import { signup, reset } from '../../features/auth/authSlice';
+
+//router
+import { useNavigate } from 'react-router-dom';
+
+//alerts
+import { toast } from 'react-toastify';
 
 //antd components
-import { Button, Form, Input, Typography } from 'antd';
+import { Button, Form, Input, message, Typography, Spin } from 'antd';
 
 //styles
 import "../../assests/styles/signup.css"
@@ -10,8 +22,34 @@ const {Title} = Typography
 
 const Signup = () => {
 
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+
+    const { user, isLoading, isError, isSuccess } = useSelector(
+        (state) => state.auth
+    ) 
+
+    useEffect(() => {
+      if(isError) {
+        toast.error(message)
+      }
+      if(isSuccess || user) {
+        navigate('/')
+      }
+
+      dispatch(reset())
+    }, [user, isError, isSuccess, dispatch, navigate])
+    
+
     const onFinish = (values) => {
-        console.log('Received values of form: ', values);
+        const userData = {
+            email: values.email,
+            firstName: values.first,
+            lastName: values.last,
+            password: values.password
+        }
+        console.log(userData)
+        dispatch(signup(userData))
     };
 
     return (
@@ -116,9 +154,11 @@ const Signup = () => {
             span: 16,
             }}
         >
-            <Button type="primary" htmlType="submit">
-            Submit
-            </Button>
+            <Spin spinning={isLoading}>
+                <Button type="primary" htmlType="submit">
+                    Submit
+                </Button>
+            </Spin>
         </Form.Item>
         </Form>
     
