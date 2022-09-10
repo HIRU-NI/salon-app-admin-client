@@ -8,6 +8,7 @@ import { PageHeader, Button } from 'antd';
 const Navbar = () => {
   return (
     <PageHeader
+    
     title="Salon Prauge Admin"
     extra={[
         (
