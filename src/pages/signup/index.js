@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 //antd components
-import { Button, Form, Input, message, Typography, Spin } from 'antd';
+import { Button, Form, Input,  Typography, Spin } from 'antd';
 
 //styles
 import "../../assests/styles/signup.css"
@@ -25,20 +25,21 @@ const Signup = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
-    const { user, isLoading, isError, isSuccess } = useSelector(
+    const { user, isLoading, isError, isSuccess, message } = useSelector(
         (state) => state.auth
     ) 
 
     useEffect(() => {
       if(isError) {
-        toast.error(message)
+        if(message.email !== '') toast.error(message.email)
+        if(message.password !== '') toast.error(message.password)
       }
       if(isSuccess || user) {
         navigate('/')
       }
 
       dispatch(reset())
-    }, [user, isError, isSuccess, dispatch, navigate])
+    }, [user, isError, isSuccess, dispatch, navigate, message])
     
 
     const onFinish = (values) => {
@@ -48,7 +49,7 @@ const Signup = () => {
             lastName: values.last,
             password: values.password
         }
-        console.log(userData)
+        
         dispatch(signup(userData))
     };
 

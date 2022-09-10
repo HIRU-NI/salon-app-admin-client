@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 //antd components
-import { Button, Form, Input, message, Typography, Spin } from 'antd';
+import { Button, Form, Input,  Typography, Spin } from 'antd';
 
 //styles
 import "../../assests/styles/signup.css"
@@ -25,20 +25,21 @@ const Login = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
-    const { user, isLoading, isError, isSuccess } = useSelector(
+    const { user, isLoading, isError, isSuccess, message } = useSelector(
         (state) => state.auth
     ) 
 
     useEffect(() => {
       if(isError) {
-        toast.error(message)
+        if(message.email !== '') toast.error(message.email)
+        if(message.password !== '') toast.error(message.password)
       }
       if(isSuccess || user) {
         navigate('/')
       }
 
       dispatch(reset())
-    }, [user, isError, isSuccess, dispatch, navigate])
+    }, [user, isError, isSuccess, dispatch, navigate, message])
     
 
     const onFinish = (values) => {
@@ -64,7 +65,7 @@ const Login = () => {
         }}
         onFinish={onFinish}
         >
-            <Title level={2} className="signup_titile">Signup</Title>
+            <Title level={2} className="signup_titile">Login</Title>
             <Form.Item
                 label="Email"
                 name="email"
