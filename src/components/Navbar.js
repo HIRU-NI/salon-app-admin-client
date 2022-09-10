@@ -23,21 +23,21 @@ const Navbar = () => {
 
     return (
         <PageHeader
-        
-        title="Salon Prauge Admin"
-        extra={user ? [
-            (<Button key="3" onClick={onLogout}>Logout</Button>)
-            
-        ] : [
-            (
-                <Link to="/login" key="login">
-                    <Button key="2">Login</Button>
-                </Link>)
-                ,
-                (<Link to="/signup" key="signup">
-                    <Button key="1" type="primary">Signup</Button>
-                </Link>)
-        ]}
+            title="Salon Prauge Admin"
+            extra={user ? [
+                (<Button key="3" onClick={onLogout}>Logout</Button>)
+                
+            ] : [
+                (
+                    <Link to="/login" key="login">
+                        <Button key="2">Login</Button>
+                    </Link>)
+                    ,
+                    (<Link to="/signup" key="signup">
+                        <Button key="1" type="primary">Signup</Button>
+                    </Link>)
+            ]}
+            style={{background:"#fff"}}
     />
     );
 };

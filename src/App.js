@@ -1,5 +1,6 @@
 //components
 import Navbar from "./components/Navbar"
+import Sidebar from './components/Sidebar'
 
 //pages
 import Home from "./pages/home"
@@ -19,18 +20,50 @@ import {
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+//antd components
+import { Layout } from "antd"
+
+import { useSelector } from "react-redux"
+
+const { Sider, Content } = Layout
+
+
 
 function App() {
+  const { user } = useSelector( state => state.auth )
   return (
-    <>
+    <Layout style={{height: "100vh"}}>
       <Navbar />
-      <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-      </Routes>
+      <Layout>
+        {
+          user ? (
+            <Sider style={{background:"#fff"}}>
+              <Sidebar />
+            </Sider>
+          ) : (<></>)
+        }
+        <Layout>
+          <Content
+            style={{
+              margin: '24px 16px 0',
+          }}>
+              <div
+                style={{
+                  padding: 24,
+                  minHeight: 360,
+                }}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
+                </Routes>
+              </div>
+          </Content>
+        </Layout>
+      </Layout>
+      
       <ToastContainer />
-    </>
+    </Layout>
   );
 }
 
