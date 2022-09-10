@@ -18,7 +18,7 @@ const Home = () => {
     
     return (
         <div>
-            Content
+            Home
         </div>
     )
 }

@@ -6,6 +6,9 @@ import Sidebar from './components/Sidebar'
 import Home from "./pages/home"
 import Login from "./pages/login"
 import Signup from "./pages/signup"
+import Clients from "./pages/clients"
+import Reservations from "./pages/reservations"
+import Calendar from "./pages/calendar"
 
 //styles
 import "antd/dist/antd.min.css"
@@ -56,6 +59,9 @@ function App() {
                   <Route path="/" element={<Home />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<Signup />} />
+                  <Route path="/clients" element={<Clients />} />
+                  <Route path="/reservations" element={<Reservations />} />
+                  <Route path="/calendar" element={<Calendar />} />
                 </Routes>
               </div>
           </Content>
