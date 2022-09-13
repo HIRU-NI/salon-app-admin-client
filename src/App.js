@@ -9,6 +9,7 @@ import Signup from "./pages/signup"
 import Clients from "./pages/clients"
 import Reservations from "./pages/reservations"
 import Calendar from "./pages/calendar"
+import Admins from "./pages/admin"
 
 //styles
 import "antd/dist/antd.min.css"
@@ -62,6 +63,7 @@ function App() {
                   <Route path="/clients" element={<Clients />} />
                   <Route path="/reservations" element={<Reservations />} />
                   <Route path="/calendar" element={<Calendar />} />
+                  <Route path="/admin" element={<Admins />} />
                 </Routes>
               </div>
           </Content>

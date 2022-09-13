@@ -1,4 +1,4 @@
-import { ClockCircleOutlined, UserOutlined, CalendarOutlined, AppstoreOutlined } from '@ant-design/icons';
+import { ClockCircleOutlined, UserOutlined, CalendarOutlined, AppstoreOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 import  React from 'react';
 
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -29,7 +29,13 @@ const navs = [
         name: 'Calendar',
         icon: <CalendarOutlined />,
         path:'/calendar'
-    }
+    },
+    {
+      index: 5,
+      name: 'Admins',
+      icon: <UsergroupAddOutlined />,
+      path:'/admin'
+  }
 ]
   
 

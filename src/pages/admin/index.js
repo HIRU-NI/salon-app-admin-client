@@ -1,11 +1,11 @@
 import React from 'react'
 
-const Calendar = () => {
+const Admins = () => {
   return (
     <div>
-      Calendar
+      Admins
     </div>
   )
 }
 
-export default Calendar
+export default Admins
