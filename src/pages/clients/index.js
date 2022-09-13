@@ -1,5 +1,5 @@
 //antd components
-import { Space, Table } from 'antd';
+import { Space, Table, Input } from 'antd';
 
 //app components
 import CreateClient from '../../components/dashboard/clients/CreateClient';
@@ -7,19 +7,23 @@ import DeleteClient from '../../components/dashboard/clients/DeleteClient';
 import EditClient from '../../components/dashboard/clients/EditClient';
 
 
-import {React, useEffect} from 'react';
+import {React, useEffect, useState} from 'react';
 
 import { useNavigate } from 'react-router-dom';
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
-
 import { getAllClients, reset } from '../../features/clients/clientSlice';
+
+//search box
+const { Search } = Input
 
 
 const Clients = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+
+  const [ searchValue, setSearchValue ] = useState('')
 
   const { user } = useSelector( state => state.auth)
   const { clients, isError,  message } = useSelector(state => state.client)
@@ -52,10 +56,14 @@ const Clients = () => {
       ),
     },
   ];
+
+  const onSearch = (value) => {
+    setSearchValue(value)
+  }
   
 
   const getClientData = () => {
-    const clientData = clients.map((client, index) => {
+    let clientData = clients.map((client, index) => {
       return {
         key: index,
         name: `${client.firstName} ${client.lastName}`,
@@ -64,6 +72,11 @@ const Clients = () => {
         id: client._id 
       }
     })
+
+    if(searchValue !== '') {
+      clientData = clientData.filter(client => (client.email.includes(searchValue)
+                                                || client.name.includes(searchValue)))
+    }
 
     return clientData
   }
@@ -82,6 +95,7 @@ const Clients = () => {
   return (
     <>
       <CreateClient />
+      <Search allowClear style={{marginBottom: "20px"}} placeholder="Search by name or email" onSearch={onSearch}/>
       <Table columns={columns} dataSource={getClientData()} />
     </>
   )
