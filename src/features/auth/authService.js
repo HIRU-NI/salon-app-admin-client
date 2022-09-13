@@ -9,7 +9,7 @@ const signup = async (userData) => {
         "Content-Type": "application/json",
     }})
     if(response.data) {
-        localStorage.setItem('user', JSON.stringify(response.data))
+        localStorage.setItem('user', JSON.stringify(response.data.user))
     }
 
     return response.data

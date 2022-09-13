@@ -1,5 +1,20 @@
-import { Space, Table } from 'antd';
-import React from 'react';
+//antd components
+import { Space, Table, Button } from 'antd';
+
+//app components
+import CreateClient from '../../components/dashboard/clients/CreateClient';
+import DeleteClient from '../../components/dashboard/clients/DeleteClient';
+
+
+import {React, useEffect} from 'react';
+
+import { useNavigate } from 'react-router-dom';
+
+//redux
+import { useSelector, useDispatch } from 'react-redux';
+
+import { getAllClients } from '../../features/clients/clientSlice';
+
 const columns = [
   {
     title: 'Name',
@@ -22,36 +37,47 @@ const columns = [
     key: 'action',
     render: (_, record) => (
       <Space size="middle">
-        <button>Edit</button>
-        <button>Delete</button>
+        <Button type="dashed">Edit</Button>
+        <DeleteClient />
       </Space>
     ),
   },
 ];
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer'],
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['loser'],
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-];
 
-const Clients = () => <Table columns={columns} dataSource={data} />;
+const Clients = () => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const { user } = useSelector( state => state.auth)
+  const { clients, isError,  message } = useSelector(state => state.client)
+
+  const getClientData = () => {
+    const clientData = clients.map((client, index) => {
+      return {
+        key: index,
+        name: `${client.firstName} ${client.lastName}`,
+        email: client.email,
+        phone: client.phone,
+        id: client._id 
+      }
+    })
+
+    return clientData
+  }
+
+  useEffect(() => {
+    if(isError) console.log(message)
+    if(!user) navigate('/login')
+
+    dispatch(getAllClients())
+  }, [user, navigate, dispatch, isError, message])
+
+  return (
+    <>
+      <CreateClient />
+      <Table columns={columns} dataSource={getClientData()} />
+    </>
+  )
+}
 
 export default Clients;

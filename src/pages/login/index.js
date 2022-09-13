@@ -31,8 +31,7 @@ const Login = () => {
 
     useEffect(() => {
       if(isError) {
-        if(message.email !== '') toast.error(message.email)
-        if(message.password !== '') toast.error(message.password)
+        toast.error(message)
       }
       if(isSuccess || user) {
         navigate('/')
