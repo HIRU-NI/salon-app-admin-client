@@ -1,12 +1,12 @@
 //antd components
-import { Space, Table } from 'antd';
+import { Space, Table, Input } from 'antd';
 
 //app components
 import CreateReservation from '../../components/dashboard/reservations/CreateReservation';
 import DeleteReservation from '../../components/dashboard/reservations/DeleteReservation';
 
 
-import {React, useEffect} from 'react';
+import {React, useEffect, useState} from 'react';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -18,6 +18,10 @@ import { getAllStylists, reset as resetStylists } from '../../features/stylists/
 import { getAllServices, reset as resetServices } from '../../features/services/serviceSlice';
 import { getAllReservations, reset as resetReservations } from '../../features/reservations/reservationSlice';
 import { toast } from 'react-toastify';
+
+//search box
+const { Search } = Input
+
 
 const columns = [
   {
@@ -57,6 +61,7 @@ const Reservations = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
+  const [ searchValue, setSearchValue ] = useState('')
 
   const { user } = useSelector( state => state.auth)
   const { clients} = useSelector(state => state.client)
@@ -64,7 +69,9 @@ const Reservations = () => {
   const { stylists } = useSelector(state => state.stylist)
   const { reservations , isError,  message } = useSelector(state => state.reservation)
 
-  
+  const onSearch = (value) => {
+    setSearchValue(value)
+  }
 
   useEffect(() => {
     if(isError) toast.error(message)
@@ -90,7 +97,7 @@ const Reservations = () => {
 
   const getreservationData =  () => {
     
-    const reservationData = reservations.map( (reservation, index) => {
+    let reservationData = reservations.map( (reservation, index) => {
 
       
       let client
@@ -110,11 +117,18 @@ const Reservations = () => {
       }
     })
     
+    if(searchValue !== '') {
+      reservationData = reservationData.filter(reservation => (reservation.client.includes(searchValue)
+                                                || reservation.stylist.includes(searchValue)
+                                                || reservation.service.includes(searchValue)))
+    }
+
     return JSON.parse(JSON.stringify(reservationData))
   }
   return (
     <>
       <CreateReservation/>
+      <Search allowClear style={{marginBottom: "20px"}} placeholder="Search by client, stylist or service" onSearch={onSearch}/>
       <Table columns={columns} dataSource={getreservationData()}  />
     </>
   )
