@@ -1,9 +1,10 @@
 //antd components
-import { Space, Table, Button } from 'antd';
+import { Space, Table } from 'antd';
 
 //app components
 import CreateClient from '../../components/dashboard/clients/CreateClient';
 import DeleteClient from '../../components/dashboard/clients/DeleteClient';
+import EditClient from '../../components/dashboard/clients/EditClient';
 
 
 import {React, useEffect} from 'react';
@@ -15,34 +16,6 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { getAllClients, reset } from '../../features/clients/clientSlice';
 
-const columns = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
-    render: (text) => <div>{text}</div>,
-  },
-  {
-    title: 'Email',
-    dataIndex: 'email',
-    key: 'email',
-  },
-  {
-    title: 'Phone',
-    dataIndex: 'phone',
-    key: 'phone',
-  },
-  {
-    title: 'Action',
-    key: 'action',
-    render: (_, record) => (
-      <Space size="middle">
-        <Button type="dashed">Edit</Button>
-        <DeleteClient clientID={record.id}/>
-      </Space>
-    ),
-  },
-];
 
 const Clients = () => {
   const navigate = useNavigate()
@@ -50,6 +23,36 @@ const Clients = () => {
 
   const { user } = useSelector( state => state.auth)
   const { clients, isError,  message } = useSelector(state => state.client)
+
+  const columns = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      render: (text) => <div>{text}</div>,
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+    },
+    {
+      title: 'Phone',
+      dataIndex: 'phone',
+      key: 'phone',
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (_, record) => (
+        <Space size="middle">
+          <EditClient client={clients.find(client => client._id === record.id)}/>
+          <DeleteClient clientID={record.id}/>
+        </Space>
+      ),
+    },
+  ];
+  
 
   const getClientData = () => {
     const clientData = clients.map((client, index) => {
