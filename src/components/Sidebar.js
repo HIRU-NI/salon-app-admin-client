@@ -1,7 +1,7 @@
 import { ClockCircleOutlined, UserOutlined, CalendarOutlined, AppstoreOutlined } from '@ant-design/icons';
 import  React from 'react';
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import {  Menu } from 'antd';
 
@@ -36,15 +36,16 @@ const navs = [
   const Sidebar = ({ selectedNav }) => {
 
     const navigate = useNavigate()
+    const location = useLocation()
   
     return (
         <Menu
         theme="light"
         mode="inline"
-        defaultSelectedKeys={[1]}
+        defaultSelectedKeys={String(navs.filter(nav => nav.path === location.pathname)[0].index)}
         items={navs.map(
           (nav) => ({
-            key: String(nav.index + 1),
+            key: String(nav.index),
             icon: nav.icon,
             label: nav.name,
             onClick: () => {
