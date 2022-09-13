@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 
 import reservationService from './reservationsService'
 
+
 const initialState = {
     reservations: [],
     isError: false,
@@ -9,6 +10,8 @@ const initialState = {
     isLoading: false, 
     message: ''
 }
+
+
 
 //create a reservation
 export const createReservation = createAsyncThunk('createReservation', async (reservation, thunkAPI) => {
@@ -79,9 +82,11 @@ export const reservationSlice = createSlice({
                 state.isLoading = true
             })
             .addCase(getAllReservations.fulfilled, (state, action) => {
+                
                 state.isSuccess = true
                 state.isLoading = false
                 state.reservations = action.payload
+                
             })
             .addCase(getAllReservations.rejected, (state, action) => {
                 state.isError = true

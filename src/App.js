@@ -36,7 +36,7 @@ const { Sider, Content } = Layout
 function App() {
   const { user } = useSelector( state => state.auth )
   return (
-    <Layout style={{height: "100vh"}}>
+    <Layout style={{minHeight: "100vh"}}>
       <Navbar />
       <Layout>
         {

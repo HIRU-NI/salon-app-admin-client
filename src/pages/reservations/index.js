@@ -46,8 +46,8 @@ const columns = [
     key: 'action',
     render: (_, record) => (
       <Space size="middle">
-        <Button type="dashed">Edit</Button>
-        <DeleteReservation />
+        <CreateReservation reservation={record}/>
+        <DeleteReservation reservationID={record.id}/>
       </Space>
     ),
   },
@@ -57,39 +57,25 @@ const Reservations = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
+
   const { user } = useSelector( state => state.auth)
   const { clients} = useSelector(state => state.client)
   const { services } = useSelector(state => state.service)
   const { stylists } = useSelector(state => state.stylist)
   const { reservations , isError,  message } = useSelector(state => state.reservation)
 
-  const getreservationData = () => {
-    
-    const reservationData = reservations.map((reservation, index) => {
-      const client = clients.filter(client => client._id === reservation.client)
-      const service = services.filter(service => service._id === reservation.service)
-      const stylist = stylists.filter(stylist => stylist._id === reservation.stylist)
-      return {
-        key: index,
-        client: `${client[0].firstName} ${client[0].lastName}`,
-        service: service[0].name,
-        stylist: stylist[0].name,
-        date: reservation.date,
-        id: reservation._id 
-      }
-    })
-
-    return reservationData
-  }
+  
 
   useEffect(() => {
     if(isError) toast.error(message)
     if(!user) navigate('/login')
-
+    
     dispatch(getAllClients())
     dispatch(getAllStylists())
     dispatch(getAllServices())
     dispatch(getAllReservations())
+
+    console.log("here")
 
     return () => {
       dispatch(resetReservations())
@@ -98,13 +84,38 @@ const Reservations = () => {
       dispatch(resetServices())
     }
 
-  }, [user, navigate, dispatch, isError, message])
+   
 
+  }, [user, navigate, isError, message, dispatch])
 
+  const getreservationData =  () => {
+    
+    const reservationData = reservations.map( (reservation, index) => {
+
+      
+      let client
+      let service
+      let stylist 
+
+       client =  clients.find(client => client._id === reservation.client) || ''
+       service =  services.find(service => service._id === reservation.service) || ''
+       stylist =  stylists.find(stylist => stylist._id === reservation.stylist) || ''
+      return {
+        key: index,
+        client: `${client.firstName} ${client.lastName}`,
+        service: service.name,
+        stylist: stylist.name,
+        date: reservation.date,
+        id: reservation._id 
+      }
+    })
+    
+    return JSON.parse(JSON.stringify(reservationData))
+  }
   return (
     <>
       <CreateReservation/>
-      <Table columns={columns} dataSource={getreservationData()} />
+      <Table columns={columns} dataSource={getreservationData()}  />
     </>
   )
 }

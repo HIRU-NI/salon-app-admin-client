@@ -9,10 +9,12 @@ import { useSelector, useDispatch } from 'react-redux';
 //api functions 
 import {  createReservation } from '../../../features/reservations/reservationSlice';
 
+import moment from 'moment';
+
 
 const { Option } = Select;
 
-const CreateReservation = () => {
+const CreateReservation = ({reservation}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [form] = Form.useForm();
@@ -22,6 +24,16 @@ const CreateReservation = () => {
   const { stylists } = useSelector(state => state.stylist)
   const { services } = useSelector(state => state.service)
   const { clients} = useSelector(state => state.client)
+
+
+    const initialValues = reservation ? {
+      client : reservation.client,
+      stylist: reservation.stylist,
+      service: reservation.service,
+      date: moment(reservation.date)
+    } : {}
+
+  
 
 // useEffect(() => {
 //     if(isError) {
@@ -61,12 +73,13 @@ const CreateReservation = () => {
   };
 
   return (
-    <div style={{marginBottom: "20px"}}>
-      <Button type="primary" onClick={showModal}>
-        Add New Reservation
+    <div style={{marginBottom: !reservation? "20px": ""}}>
+      <Button type={reservation? "dashed" : "primary"} onClick={showModal}>
+        {reservation ? "Edit" : "Add New Reservation"}
       </Button>
       <Modal title="Add New Reservation" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         <Form
+            initialValues={reservation ? initialValues : null}
             onFinish={onFinish}
             form={form}
             name="create-client"
@@ -76,9 +89,7 @@ const CreateReservation = () => {
             wrapperCol={{
                 span: 16,
             }}
-            initialValues={{
-                remember: true,
-            }}
+            
             //   onFinish={onFinish}
             //   onFinishFailed={onFinishFailed}
             autoComplete="off"
