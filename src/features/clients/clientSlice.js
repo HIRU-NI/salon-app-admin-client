@@ -49,6 +49,20 @@ export const deleteClient = createAsyncThunk('deleteclient', async (id, thunkAPI
     }
 })
 
+//update client
+export const updateClient = createAsyncThunk('updateclient', async (clientData, thunkAPI) => {
+    try {
+        console.log(clientData)
+        const token = thunkAPI.getState().auth.user.token
+        return await clientService.updateClient(clientData.id, clientData.client, token)
+    } catch (error) {
+        const message = error.response.data ||
+        error.message ||
+        error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
 export const clientSlice = createSlice({
     name: 'client',
     initialState,
@@ -97,6 +111,25 @@ export const clientSlice = createSlice({
                 state.clients = state.clients.filter(client => client._id !== action.payload.id)
             })
             .addCase(deleteClient.rejected, (state, action) => {
+                state.isError = true
+                state.isLoading = false
+                state.message = action.payload
+            })
+            .addCase(updateClient.pending, state => {
+                state.isLoading = true
+            })
+            .addCase(updateClient.fulfilled, (state, action) => {
+                state.isSuccess = true
+                state.isLoading = false
+                state.clients = state.clients.map(client => {
+                    return client._id === action.payload._id ? {...client, 
+                        email:action.payload.email, 
+                        firstName:action.payload.firstName,
+                        lastName:action.payload.lastName,
+                        phone:action.payload.phone} : client
+                })
+            })
+            .addCase(updateClient.rejected, (state, action) => {
                 state.isError = true
                 state.isLoading = false
                 state.message = action.payload

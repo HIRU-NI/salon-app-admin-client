@@ -39,10 +39,24 @@ const deleteClient = async (id, token) => {
     return response.data
 }
 
+//update client
+const updateClient = async (id, clientData, token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    
+    const response = await axios.put(API_URL +  `/${id}`, clientData, config)
+    
+    return response.data
+}
+
 const clientService = {
     createClient,
     getAllClients,
-    deleteClient
+    deleteClient,
+    updateClient
 }
 
 export default clientService

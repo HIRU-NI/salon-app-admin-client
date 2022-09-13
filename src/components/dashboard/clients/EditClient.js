@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 //api functions 
-import {  createClient } from '../../../features/clients/clientSlice';
+import {  updateClient } from '../../../features/clients/clientSlice';
 
 //alerts
 import { toast } from 'react-toastify';
@@ -22,24 +22,32 @@ const EditClient = ( {client} ) => {
   const {  isSuccess } = useSelector(
     (state) => state.client
 ) 
+    const initalValues = {
+        email: client.email,
+        firstname: client.firstName,
+        lastname: client.lastName,
+        phone: client.phone
+    }
 
   const onFinish = (values) => {
-    dispatch(createClient({
-      email: values.email,
+    dispatch(updateClient({
+        id: client._id,
+        client: {
+            email: values.email,
       firstName: values.firstname,
       lastName: values.lastname,
       phone: values.phone
+        }
     }))
     if(isSuccess) {
       setIsModalOpen(false);
       form.resetFields()
-      toast.success("User added successfully")
+      toast.success("Client updated successfully")
     }
     
   }
 
   const showModal = () => {
-    console.log(client)
     setIsModalOpen(true);
     form.resetFields()
   };
@@ -60,6 +68,7 @@ const EditClient = ( {client} ) => {
       </Button>
       <Modal title="Add New Client" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         <Form
+            initialValues={initalValues}
             onFinish={onFinish}
             form={form}
             name="create-client"
@@ -69,9 +78,7 @@ const EditClient = ( {client} ) => {
             wrapperCol={{
                 span: 16,
             }}
-            initialValues={{
-                remember: true,
-            }}
+            
             //   onFinish={onFinish}
             //   onFinishFailed={onFinishFailed}
             autoComplete="off"
@@ -91,7 +98,7 @@ const EditClient = ( {client} ) => {
                     },
                 ]}
             >
-                <Input defaultValue={client.email}/>
+                <Input />
             </Form.Item>
             <Form.Item
                 label="First Name"
@@ -103,7 +110,7 @@ const EditClient = ( {client} ) => {
                 },
                 ]}
             >
-                <Input defaultValue={client.firstName}/>
+                <Input />
             </Form.Item>
             <Form.Item
                 label="Last Name"
@@ -115,7 +122,7 @@ const EditClient = ( {client} ) => {
                 },
                 ]}
             >
-                <Input defaultValue={client.lastName}/>
+                <Input />
             </Form.Item>
             <Form.Item
                 label="Phone"
@@ -135,7 +142,7 @@ const EditClient = ( {client} ) => {
                 }
                 ]}
             >
-                <Input maxLength={10} defaultValue={client.phone}/>
+                <Input maxLength={10} />
             </Form.Item>
         </Form>
       </Modal>
