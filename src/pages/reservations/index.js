@@ -14,28 +14,31 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { getAllClients } from '../../features/clients/clientSlice';
+import { getAllStylists } from '../../features/stylists/stylistSlice';
+import { getAllServices } from '../../features/services/serviceSlice';
+import { getAllReservations } from '../../features/reservations/reservationSlice';
 
 const columns = [
   {
     title: 'Client',
-    dataIndex: 'name',
+    dataIndex: 'client',
     key: 'client_name',
     render: (text) => <div>{text}</div>,
   },
   {
     title: 'Service',
-    dataIndex: 'name',
+    dataIndex: 'service',
     key: 'service_name',
   },
   {
     title: 'Stylist',
-    dataIndex: 'phone',
+    dataIndex: 'stylist',
     key: 'stylist_name',
   },
   {
     title: 'Date & time',
-    dataIndex: 'phone',
-    key: 'phone',
+    dataIndex: 'date',
+    key: 'date',
   },
   {
     title: 'Action',
@@ -55,19 +58,29 @@ const Reservations = () => {
 
   const { user } = useSelector( state => state.auth)
   const { clients, isError,  message } = useSelector(state => state.client)
+  const { services } = useSelector(state => state.service)
+  const { stylists } = useSelector(state => state.stylist)
+  const { reservations } = useSelector(state => state.reservation)
 
-  const getClientData = () => {
-    const clientData = clients.map((client, index) => {
+  
+
+  const getreservationData = () => {
+    
+    const reservationData = reservations.map((reservation, index) => {
+      const client = clients.filter(client => client._id === reservation.client)
+      const service = services.filter(service => service._id === reservation.service)
+      const stylist = stylists.filter(stylist => stylist._id === reservation.stylist)
       return {
         key: index,
-        name: `${client.firstName} ${client.lastName}`,
-        email: client.email,
-        phone: client.phone,
-        id: client._id 
+        client: `${client[0].firstName} ${client[0].lastName}`,
+        service: service[0].name,
+        stylist: stylist[0].name,
+        date: reservation.date,
+        id: reservation._id 
       }
     })
 
-    return clientData
+    return reservationData
   }
 
   useEffect(() => {
@@ -75,12 +88,16 @@ const Reservations = () => {
     if(!user) navigate('/login')
 
     dispatch(getAllClients())
+    dispatch(getAllStylists())
+    dispatch(getAllServices())
+    dispatch(getAllReservations())
+
   }, [user, navigate, dispatch, isError, message])
 
   return (
     <>
-      <CreateReservation />
-      <Table columns={columns} dataSource={getClientData()} />
+      <CreateReservation/>
+      <Table columns={columns} dataSource={getreservationData()} />
     </>
   )
 }

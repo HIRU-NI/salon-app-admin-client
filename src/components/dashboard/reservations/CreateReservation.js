@@ -1,5 +1,5 @@
 //antd components
-import { Button, Modal, Form, Input } from 'antd';
+import { Button, Modal, Form, Select, DatePicker  } from 'antd';
 
 import React, { useState, useEffect } from 'react';
 
@@ -7,10 +7,12 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 //api functions 
-import { reset, createClient } from '../../../features/clients/clientSlice';
+import { reset, createReservation } from '../../../features/reservations/reservationSlice';
 
 //alerts
 import { toast } from 'react-toastify';
+
+const { Option } = Select;
 
 const CreateReservation = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,7 +23,11 @@ const CreateReservation = () => {
 
   const { user,  isError, isSuccess, message } = useSelector(
     (state) => state.auth
-) 
+  ) 
+  const { stylists } = useSelector(state => state.stylist)
+  const { services } = useSelector(state => state.service)
+  const { clients} = useSelector(state => state.client)
+
 useEffect(() => {
     if(isError) {
       if(message.email !== '') toast.error(message.error)
@@ -35,11 +41,11 @@ useEffect(() => {
   }, [user, isError, isSuccess, dispatch, message])
 
   const onFinish = (values) => {
-    dispatch(createClient({
-      email: values.email,
-      firstName: values.firstname,
-      lastName: values.lastname,
-      phone: values.phone
+    dispatch(createReservation({
+      client: values.client,
+      service: values.service,
+      stylist: values.stylist,
+      date: values.date
     }))
     setIsModalOpen(false);
     form.resetFields()
@@ -83,64 +89,88 @@ useEffect(() => {
             autoComplete="off"
         >
             <Form.Item
-                label="Email"
-                name="email"
+                label="Service"
+                name="service"
                 rules={[
                     {
-                    type: 'email',
-                    message: 'The input is not valid E-mail!',
-                    },
-                    {
                     required: true,
-                    message: 'Please input your E-mail!',
+                    message: 'Please select a service!',
                     },
                 ]}
             >
-                <Input />
+              <Select
+                showSearch
+                placeholder="Select a service"
+                optionFilterProp="children"
+                  
+                filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
+              >
+                {services.map(service => {
+                  return (
+                    <Option value={service._id} key={service._id}>{service.name}</Option>
+                  )
+                })}
+              </Select>
             </Form.Item>
             <Form.Item
-                label="First Name"
-                name="firstname"
+                label="Client"
+                name="client"
+                rules={[
+                    {
+                    required: true,
+                    message: 'Please select a client!',
+                    },
+                ]}
+            >
+              <Select
+                showSearch
+                placeholder="Select a client"
+                optionFilterProp="children"
+                  
+                filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
+              >
+                {clients.map(client => {
+                  return (
+                    <Option value={client._id} key={client._id}>{client.firstName} {client.lastName}</Option>
+                  )
+                })}
+              </Select>
+            </Form.Item>
+            <Form.Item
+                label="Stylist"
+                name="stylist"
+                rules={[
+                    {
+                    required: true,
+                    message: 'Please select a stylist!',
+                    },
+                ]}
+            >
+              <Select
+                showSearch
+                placeholder="Select a stylist"
+                optionFilterProp="children"
+                  
+                filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
+              >
+                {stylists.map(stylist => {
+                  return (
+                    <Option value={stylist._id} key={stylist._id}>{stylist.name}</Option>
+                  )
+                })}
+              </Select>
+            </Form.Item>
+            <Form.Item
+                label="Date & Time"
+                name="date"
                 rules={[
                 {
                     required: true,
-                    message: 'Please input your first name!',
+                    message: 'Please select a date and time!',
                 },
                 ]}
             >
-                <Input />
-            </Form.Item>
-            <Form.Item
-                label="Last Name"
-                name="lastname"
-                rules={[
-                {
-                    required: true,
-                    message: 'Please input your last name!',
-                },
-                ]}
-            >
-                <Input />
-            </Form.Item>
-            <Form.Item
-                label="Phone"
-                name="phone"
-                rules={[
-                {
-                    required: true,
-                    message: 'Please input your phone!',
-                },
-                {
-                    max: 10,
-                    message: "invalid phone number!"
-                },
-                {
-                    min: 10,
-                    message: "invalid phone number!"
-                }
-                ]}
-            >
-                <Input maxLength={10}/>
+                <DatePicker showTime />
             </Form.Item>
         </Form>
       </Modal>
