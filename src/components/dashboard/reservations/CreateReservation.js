@@ -1,27 +1,38 @@
 //antd components
 import { Button, Modal, Form, Input } from 'antd';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
 
 //api functions 
-import {  createClient } from '../../../features/clients/clientSlice';
+import { reset, createClient } from '../../../features/clients/clientSlice';
 
 //alerts
 import { toast } from 'react-toastify';
 
-const CreateClient = () => {
+const CreateReservation = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [form] = Form.useForm();
 
   const dispatch = useDispatch()
 
-  const {  isSuccess } = useSelector(
-    (state) => state.client
+  const { user,  isError, isSuccess, message } = useSelector(
+    (state) => state.auth
 ) 
+useEffect(() => {
+    if(isError) {
+      if(message.email !== '') toast.error(message.error)
+      if(message.password !== '') toast.error(message.error)
+    }
+    if(isSuccess || user) {
+      //navigate('/')
+    }
+
+    dispatch(reset())
+  }, [user, isError, isSuccess, dispatch, message])
 
   const onFinish = (values) => {
     dispatch(createClient({
@@ -30,12 +41,8 @@ const CreateClient = () => {
       lastName: values.lastname,
       phone: values.phone
     }))
-    if(isSuccess) {
-      setIsModalOpen(false);
-      form.resetFields()
-      toast.success("User added successfully")
-    }
-    
+    setIsModalOpen(false);
+    form.resetFields()
   }
 
   const showModal = () => {
@@ -55,9 +62,9 @@ const CreateClient = () => {
   return (
     <div style={{marginBottom: "20px"}}>
       <Button type="primary" onClick={showModal}>
-        Add New Client
+        Add New Reservation
       </Button>
-      <Modal title="Add New Client" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+      <Modal title="Add New Reservation" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         <Form
             onFinish={onFinish}
             form={form}
@@ -141,4 +148,4 @@ const CreateClient = () => {
   );
 };
 
-export default CreateClient;
+export default CreateReservation;

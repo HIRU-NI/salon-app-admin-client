@@ -26,6 +26,7 @@ export const createClient = createAsyncThunk('createClient', async (client, thun
 //get all clients
 export const getAllClients = createAsyncThunk('getclients', async (_, thunkAPI) => {
     try {
+        console.log("here")
         const token = thunkAPI.getState().auth.user.token
         return await clientService.getAllClients(token)
     } catch (error) {
@@ -37,12 +38,14 @@ export const getAllClients = createAsyncThunk('getclients', async (_, thunkAPI) 
 })
 
 //delete client
-export const deleteClient = createAsyncThunk('deleteClient', async (id, thunkAPI) => {
+export const deleteClient = createAsyncThunk('deleteclient', async (id, thunkAPI) => {
     try {
         const token = thunkAPI.getState().auth.user.token
         return await clientService.deleteClient(id, token)
     } catch (error) {
-        const message = error
+        const message = error.response.data ||
+        error.message ||
+        error.toString()
         return thunkAPI.rejectWithValue(message)
     }
 })

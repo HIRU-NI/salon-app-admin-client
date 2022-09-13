@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 //redux
 import { useSelector, useDispatch } from 'react-redux';
 
-import { getAllClients } from '../../features/clients/clientSlice';
+import { getAllClients, reset } from '../../features/clients/clientSlice';
 
 const columns = [
   {
@@ -38,7 +38,7 @@ const columns = [
     render: (_, record) => (
       <Space size="middle">
         <Button type="dashed">Edit</Button>
-        <DeleteClient />
+        <DeleteClient clientID={record.id}/>
       </Space>
     ),
   },
@@ -70,6 +70,10 @@ const Clients = () => {
     if(!user) navigate('/login')
 
     dispatch(getAllClients())
+
+    return () => {
+      dispatch(reset())
+    }
   }, [user, navigate, dispatch, isError, message])
 
   return (

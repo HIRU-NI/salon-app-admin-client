@@ -1,13 +1,13 @@
 //antd components
 import { Button, Modal } from 'antd';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
 
 //api functions 
-import { reset, deleteClient } from '../../../features/clients/clientSlice';
+import {  deleteClient, getAllClients } from '../../../features/clients/clientSlice';
 
 //alerts
 import { toast } from 'react-toastify';
@@ -21,8 +21,8 @@ const { confirm } = Modal
 const DeleteClient = ({clientID}) => {
   const dispatch = useDispatch()
 
-  const { user,  isError, isSuccess, message } = useSelector(
-    (state) => state.auth
+  const {  isSuccess } = useSelector(
+    (state) => state.client
     ) 
 
     const showDeleteConfirm = () => {
@@ -34,8 +34,12 @@ const DeleteClient = ({clientID}) => {
             cancelText: 'No',
       
             onOk() {
+            console.log(clientID)
             dispatch(deleteClient(clientID))
-            toast.success("User deleted successfully")
+            if(isSuccess) {
+              toast.success("User deleted successfully")
+              dispatch(getAllClients())
+            }
 
           },
       
@@ -44,17 +48,6 @@ const DeleteClient = ({clientID}) => {
           },
         });
       };
-    useEffect(() => {
-    if(isError) {
-      if(message.email !== '') toast.error(message.error)
-      if(message.password !== '') toast.error(message.error)
-    }
-    if(isSuccess || user) {
-      //navigate('/')
-    }
-
-    dispatch(reset())
-  }, [user, isError, isSuccess, dispatch, message])
 
   return (
     <div>
