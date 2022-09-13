@@ -27,7 +27,7 @@ const getAllReservations = async (token) => {
 }
 
 //delete client
-const deleteClient = async (id, token) => {
+const deleteReservation = async (id, token) => {
     const config = {
         headers: {
             Authorization: `Bearer ${token}`
@@ -42,7 +42,7 @@ const deleteClient = async (id, token) => {
 const clientService = {
     createReservation,
     getAllReservations,
-    deleteClient
+    deleteReservation
 }
 
 export default clientService

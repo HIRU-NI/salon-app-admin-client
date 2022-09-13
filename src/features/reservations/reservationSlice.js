@@ -36,18 +36,18 @@ export const getAllReservations = createAsyncThunk('getreservations', async (_, 
     }
 })
 
-// //delete client
-// export const deleteClient = createAsyncThunk('deleteclient', async (id, thunkAPI) => {
-//     try {
-//         const token = thunkAPI.getState().auth.user.token
-//         return await reservationService.deleteClient(id, token)
-//     } catch (error) {
-//         const message = error.response.data ||
-//         error.message ||
-//         error.toString()
-//         return thunkAPI.rejectWithValue(message)
-//     }
-// })
+//delete reservation
+export const deleteReservation = createAsyncThunk('deletereservation', async (id, thunkAPI) => {
+    try {
+        const token = thunkAPI.getState().auth.user.token
+        return await reservationService.deleteReservation(id, token)
+    } catch (error) {
+        const message = error.response.data ||
+        error.message ||
+        error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+})
 
 export const reservationSlice = createSlice({
     name: 'reservation',
@@ -68,7 +68,7 @@ export const reservationSlice = createSlice({
             .addCase(createReservation.fulfilled, (state, action) => {
                 state.isSuccess = true
                 state.isLoading = false
-                state.clients.push(action.payload)
+                state.reservations.push(action.payload)
             })
             .addCase(createReservation.rejected, (state, action) => {
                 state.isError = true
@@ -88,19 +88,19 @@ export const reservationSlice = createSlice({
                 state.isLoading = false
                 state.message = action.payload
             })
-            // .addCase(deleteClient.pending, state => {
-            //     state.isLoading = true
-            // })
-            // .addCase(deleteClient.fulfilled, (state, action) => {
-            //     state.isSuccess = true
-            //     state.isLoading = false
-            //     state.clients = state.clients.filter(client => client._id !== action.payload.id)
-            // })
-            // .addCase(deleteClient.rejected, (state, action) => {
-            //     state.isError = true
-            //     state.isLoading = false
-            //     state.message = action.payload
-            // })
+            .addCase(deleteReservation.pending, state => {
+                state.isLoading = true
+            })
+            .addCase(deleteReservation.fulfilled, (state, action) => {
+                state.isSuccess = true
+                state.isLoading = false
+                state.reservations = state.reservations.filter(reservation => reservation._id !== action.payload.id)
+            })
+            .addCase(deleteReservation.rejected, (state, action) => {
+                state.isError = true
+                state.isLoading = false
+                state.message = action.payload
+            })
     }
 })
 

@@ -1,16 +1,14 @@
 //antd components
 import { Button, Modal, Form, Select, DatePicker  } from 'antd';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
 
 //api functions 
-import { reset, createReservation } from '../../../features/reservations/reservationSlice';
+import {  createReservation } from '../../../features/reservations/reservationSlice';
 
-//alerts
-import { toast } from 'react-toastify';
 
 const { Option } = Select;
 
@@ -21,26 +19,23 @@ const CreateReservation = () => {
 
   const dispatch = useDispatch()
 
-  const { user,  isError, isSuccess, message } = useSelector(
-    (state) => state.auth
-  ) 
   const { stylists } = useSelector(state => state.stylist)
   const { services } = useSelector(state => state.service)
   const { clients} = useSelector(state => state.client)
 
-useEffect(() => {
-    if(isError) {
-      if(message.email !== '') toast.error(message.error)
-      if(message.password !== '') toast.error(message.error)
-    }
-    if(isSuccess || user) {
-      //navigate('/')
-    }
+// useEffect(() => {
+//     if(isError) {
+//       if(message.email !== '') toast.error(message.error)
+//       if(message.password !== '') toast.error(message.error)
+//     }
+//     if(isSuccess || user) {
+//       //navigate('/')
+//     }
 
-    dispatch(reset())
-  }, [user, isError, isSuccess, dispatch, message])
+//     dispatch(reset())
+//   }, [user, isError, isSuccess, dispatch, message])
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     dispatch(createReservation({
       client: values.client,
       service: values.service,

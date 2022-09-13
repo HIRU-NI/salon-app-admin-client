@@ -3,7 +3,7 @@ import { Space, Table, Button } from 'antd';
 
 //app components
 import CreateReservation from '../../components/dashboard/reservations/CreateReservation';
-import DeleteClient from '../../components/dashboard/clients/DeleteClient';
+import DeleteReservation from '../../components/dashboard/reservations/DeleteReservation';
 
 
 import {React, useEffect} from 'react';
@@ -13,10 +13,11 @@ import { useNavigate } from 'react-router-dom';
 //redux
 import { useSelector, useDispatch } from 'react-redux';
 
-import { getAllClients } from '../../features/clients/clientSlice';
-import { getAllStylists } from '../../features/stylists/stylistSlice';
-import { getAllServices } from '../../features/services/serviceSlice';
-import { getAllReservations } from '../../features/reservations/reservationSlice';
+import { getAllClients, reset as resetClients } from '../../features/clients/clientSlice';
+import { getAllStylists, reset as resetStylists } from '../../features/stylists/stylistSlice';
+import { getAllServices, reset as resetServices } from '../../features/services/serviceSlice';
+import { getAllReservations, reset as resetReservations } from '../../features/reservations/reservationSlice';
+import { toast } from 'react-toastify';
 
 const columns = [
   {
@@ -46,7 +47,7 @@ const columns = [
     render: (_, record) => (
       <Space size="middle">
         <Button type="dashed">Edit</Button>
-        <DeleteClient />
+        <DeleteReservation />
       </Space>
     ),
   },
@@ -57,12 +58,10 @@ const Reservations = () => {
   const dispatch = useDispatch()
 
   const { user } = useSelector( state => state.auth)
-  const { clients, isError,  message } = useSelector(state => state.client)
+  const { clients} = useSelector(state => state.client)
   const { services } = useSelector(state => state.service)
   const { stylists } = useSelector(state => state.stylist)
-  const { reservations } = useSelector(state => state.reservation)
-
-  
+  const { reservations , isError,  message } = useSelector(state => state.reservation)
 
   const getreservationData = () => {
     
@@ -84,7 +83,7 @@ const Reservations = () => {
   }
 
   useEffect(() => {
-    if(isError) console.log(message)
+    if(isError) toast.error(message)
     if(!user) navigate('/login')
 
     dispatch(getAllClients())
@@ -92,7 +91,15 @@ const Reservations = () => {
     dispatch(getAllServices())
     dispatch(getAllReservations())
 
+    return () => {
+      dispatch(resetReservations())
+      dispatch(resetClients())
+      dispatch(resetStylists())
+      dispatch(resetServices())
+    }
+
   }, [user, navigate, dispatch, isError, message])
+
 
   return (
     <>
