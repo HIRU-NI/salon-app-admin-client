@@ -48,12 +48,15 @@ const CreateReservation = ({reservation}) => {
 //   }, [user, isError, isSuccess, dispatch, message])
 
   const onFinish = async (values) => {
-    dispatch(createReservation({
-      client: values.client,
-      service: values.service,
-      stylist: values.stylist,
-      date: values.date
-    }))
+    if(!reservation) {
+      dispatch(createReservation({
+        client: values.client,
+        service: values.service,
+        stylist: values.stylist,
+        date: values.date
+      }))
+      
+    }
     setIsModalOpen(false);
     form.resetFields()
   }

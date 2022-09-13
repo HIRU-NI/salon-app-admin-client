@@ -1,5 +1,5 @@
 //antd components
-import { Space, Table, Button } from 'antd';
+import { Space, Table } from 'antd';
 
 //app components
 import CreateReservation from '../../components/dashboard/reservations/CreateReservation';
