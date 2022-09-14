@@ -1,5 +1,5 @@
 //antd components
-import { Space, Table, Input } from 'antd';
+import { Space, Table, Input, Tag } from 'antd';
 
 //app components
 import CreateReservation from '../../components/dashboard/reservations/CreateReservation';
@@ -44,6 +44,16 @@ const columns = [
     title: 'Date & time',
     dataIndex: 'date',
     key: 'date',
+  },
+  {
+    title: 'Status',
+    dataIndex: 'status',
+    key: 'status',
+    render: (value) => {
+      return (
+        <Tag color={value? 'green': 'cyan'}>{value ? "Completed" : "Scheduled"}</Tag>
+        )
+    }
   },
   {
     title: 'Action',
