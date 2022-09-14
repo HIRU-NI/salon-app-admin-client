@@ -4,13 +4,10 @@ import { Button, Modal } from 'antd';
 import React from 'react';
 
 //redux
-import { useSelector, useDispatch } from 'react-redux';
+import {  useDispatch } from 'react-redux';
 
 //api functions 
-import {  deleteClient, getAllClients } from '../../../features/clients/clientSlice';
-
-//alerts
-import { toast } from 'react-toastify';
+import {  deleteClient } from '../../../features/clients/clientSlice';
 
 //icons
 import { ExclamationCircleOutlined } from '@ant-design/icons';
@@ -21,9 +18,6 @@ const { confirm } = Modal
 const DeleteClient = ({clientID}) => {
   const dispatch = useDispatch()
 
-  const {  isSuccess } = useSelector(
-    (state) => state.client
-    ) 
 
     const showDeleteConfirm = () => {
         confirm({
@@ -33,13 +27,10 @@ const DeleteClient = ({clientID}) => {
             okType: 'danger',
             cancelText: 'No',
       
-            onOk() {
+            async onOk() {
             console.log(clientID)
             dispatch(deleteClient(clientID))
-            if(isSuccess) {
-              toast.success("User deleted successfully")
-              dispatch(getAllClients())
-            }
+      
 
           },
       

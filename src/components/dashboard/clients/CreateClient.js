@@ -4,13 +4,10 @@ import { Button, Modal, Form, Input } from 'antd';
 import React, { useState } from 'react';
 
 //redux
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 //api functions 
 import {  createClient } from '../../../features/clients/clientSlice';
-
-//alerts
-import { toast } from 'react-toastify';
 
 const CreateClient = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,10 +16,6 @@ const CreateClient = () => {
 
   const dispatch = useDispatch()
 
-  const {  isSuccess } = useSelector(
-    (state) => state.client
-) 
-
   const onFinish = (values) => {
     dispatch(createClient({
       email: values.email,
@@ -30,11 +23,8 @@ const CreateClient = () => {
       lastName: values.lastname,
       phone: values.phone
     }))
-    if(isSuccess) {
-      setIsModalOpen(false);
-      form.resetFields()
-      toast.success("User added successfully")
-    }
+    setIsModalOpen(false);
+    form.resetFields()
     
   }
 

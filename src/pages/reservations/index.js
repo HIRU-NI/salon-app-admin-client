@@ -82,16 +82,12 @@ const Reservations = () => {
     dispatch(getAllServices())
     dispatch(getAllReservations())
 
-    console.log("here")
-
     return () => {
       dispatch(resetReservations())
       dispatch(resetClients())
       dispatch(resetStylists())
       dispatch(resetServices())
     }
-
-   
 
   }, [user, navigate, isError, message, dispatch])
 
@@ -119,8 +115,8 @@ const Reservations = () => {
     
     if(searchValue !== '') {
       reservationData = reservationData.filter(reservation => (reservation.client.includes(searchValue)
-                                                || reservation.stylist.includes(searchValue)
-                                                || reservation.service.includes(searchValue)))
+                        || reservation.stylist.includes(searchValue)
+                        || reservation.service.includes(searchValue)))
     }
 
     return JSON.parse(JSON.stringify(reservationData))

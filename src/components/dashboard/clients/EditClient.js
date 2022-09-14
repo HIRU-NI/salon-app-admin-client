@@ -4,13 +4,10 @@ import { Button, Modal, Form, Input } from 'antd';
 import React, { useState } from 'react';
 
 //redux
-import { useSelector, useDispatch } from 'react-redux';
+import {  useDispatch } from 'react-redux';
 
 //api functions 
 import {  updateClient } from '../../../features/clients/clientSlice';
-
-//alerts
-import { toast } from 'react-toastify';
 
 const EditClient = ( {client} ) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,10 +15,6 @@ const EditClient = ( {client} ) => {
   const [form] = Form.useForm();
 
   const dispatch = useDispatch()
-
-  const {  isSuccess } = useSelector(
-    (state) => state.client
-) 
     const initalValues = {
         email: client.email,
         firstname: client.firstName,
@@ -29,21 +22,21 @@ const EditClient = ( {client} ) => {
         phone: client.phone
     }
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     dispatch(updateClient({
         id: client._id,
         client: {
             email: values.email,
-      firstName: values.firstname,
-      lastName: values.lastname,
-      phone: values.phone
+            firstName: values.firstname,
+            lastName: values.lastname,
+            phone: values.phone
         }
     }))
-    if(isSuccess) {
+    
       setIsModalOpen(false);
       form.resetFields()
-      toast.success("Client updated successfully")
-    }
+     
+    
     
   }
 

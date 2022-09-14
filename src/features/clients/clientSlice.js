@@ -52,7 +52,6 @@ export const deleteClient = createAsyncThunk('deleteclient', async (id, thunkAPI
 //update client
 export const updateClient = createAsyncThunk('updateclient', async (clientData, thunkAPI) => {
     try {
-        console.log(clientData)
         const token = thunkAPI.getState().auth.user.token
         return await clientService.updateClient(clientData.id, clientData.client, token)
     } catch (error) {
@@ -87,7 +86,7 @@ export const clientSlice = createSlice({
             .addCase(createClient.rejected, (state, action) => {
                 state.isError = true
                 state.isLoading = false
-                state.message = action.payload
+                state.message = action.payload.error
             })
             .addCase(getAllClients.pending, state => {
                 state.isLoading = true
@@ -100,7 +99,7 @@ export const clientSlice = createSlice({
             .addCase(getAllClients.rejected, (state, action) => {
                 state.isError = true
                 state.isLoading = false
-                state.message = action.payload
+                state.message = action.payload.error
             })
             .addCase(deleteClient.pending, state => {
                 state.isLoading = true
@@ -108,7 +107,7 @@ export const clientSlice = createSlice({
             .addCase(deleteClient.fulfilled, (state, action) => {
                 state.isSuccess = true
                 state.isLoading = false
-                state.clients = state.clients.filter(client => client._id !== action.payload.id)
+                state.clients = state.clients.filter(client => client._id !== action.payload._id)
             })
             .addCase(deleteClient.rejected, (state, action) => {
                 state.isError = true
@@ -132,7 +131,7 @@ export const clientSlice = createSlice({
             .addCase(updateClient.rejected, (state, action) => {
                 state.isError = true
                 state.isLoading = false
-                state.message = action.payload
+                state.message = action.payload.error
             })
     }
 })

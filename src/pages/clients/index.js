@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 //redux
 import { useSelector, useDispatch } from 'react-redux';
 import { getAllClients, reset } from '../../features/clients/clientSlice';
+import { toast } from 'react-toastify';
 
 //search box
 const { Search } = Input
@@ -82,7 +83,7 @@ const Clients = () => {
   }
 
   useEffect(() => {
-    if(isError) console.log(message)
+    if(isError) toast.error(message)
     if(!user) navigate('/login')
 
     dispatch(getAllClients())
