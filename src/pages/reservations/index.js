@@ -28,6 +28,7 @@ const columns = [
     title: 'Client',
     dataIndex: 'client',
     key: 'client_name',
+    responsive: ['md'],
     render: (text) => <div>{text}</div>,
   },
   {
@@ -47,8 +48,8 @@ const columns = [
   },
   {
     title: 'Status',
-    dataIndex: 'status',
-    key: 'status',
+    dataIndex: 'isComplete',
+    key: 'isComplete',
     render: (value) => {
       return (
         <Tag color={value? 'green': 'cyan'}>{value ? "Completed" : "Scheduled"}</Tag>
@@ -122,7 +123,8 @@ const Reservations = () => {
         stylist: stylist.name,
         stylist_id: stylist._id,
         date: reservation.date,
-        id: reservation._id 
+        id: reservation._id,
+        isComplete: reservation.isComplete
       }
     })
     
@@ -138,7 +140,7 @@ const Reservations = () => {
     <>
       <CreateReservation/>
       <Search allowClear style={{marginBottom: "20px"}} placeholder="Search by client, stylist or service" onSearch={onSearch}/>
-      <Table columns={columns} dataSource={getreservationData()}  />
+      <Table columns={columns} dataSource={getreservationData()}  style={{overflow:"scroll"}}/>
     </>
   )
 }

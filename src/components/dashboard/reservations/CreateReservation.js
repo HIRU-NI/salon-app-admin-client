@@ -1,5 +1,5 @@
 //antd components
-import { Button, Modal, Form, Select, DatePicker  } from 'antd';
+import { Button, Modal, Form, Select, DatePicker   } from 'antd';
 
 import React, { useState } from 'react';
 
@@ -30,9 +30,11 @@ const CreateReservation = ({reservation}) => {
       client : reservation.client_id,
       stylist: reservation.stylist_id,
       service: reservation.service_id,
-      date: moment(reservation.date)
+      date: moment(reservation.date),
+      isComplete: reservation.isComplete ? "completed" : "scheduled"
     } : {}
 
+    console.log(initialValues)
 
   const onFinish = async (values) => {
     if(!reservation) {
@@ -42,26 +44,29 @@ const CreateReservation = ({reservation}) => {
         stylist: values.stylist,
         date: values.date
       }))
+      form.resetFields()
     }
     else {
+      console.log(values.isComplete === "completed" ? true : false)
       dispatch(updateReservation({
         id: reservation.id,
         reservation: {
           client: values.client,
           service: values.service,
           stylist: values.stylist,
-          date: values.date
+          date: values.date,
+          isComplete: values.isComplete === "completed" ? true : false
         }
       }))
     }
 
     setIsModalOpen(false);
-    form.resetFields()
+    //form.resetFields()
   }
 
   const showModal = () => {
     setIsModalOpen(true);
-    form.resetFields()
+    //form.resetFields()
   };
 
   const handleOk = () => {
@@ -78,7 +83,8 @@ const CreateReservation = ({reservation}) => {
       <Button type={reservation? "dashed" : "primary"} onClick={showModal}>
         {reservation ? "Edit" : "Add New Reservation"}
       </Button>
-      <Modal title="Add New Reservation" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+      <Modal title={"Add New Reservation"} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+        
         <Form
             initialValues={reservation ? initialValues : null}
             onFinish={onFinish}
@@ -176,6 +182,24 @@ const CreateReservation = ({reservation}) => {
             >
                 <DatePicker showTime />
             </Form.Item>
+            {
+              reservation ? (
+                <Form.Item
+                label="Status"
+                name="isComplete"
+                >
+                  <Select
+                  placeholder="Update status"
+                  optionFilterProp="children"
+                  filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
+                  >
+                    <Option value="completed" key="completed">Completed</Option>
+                    <Option value="scheduled" key="scheduled">Scheduled</Option>
+                  </Select>
+                  
+                </Form.Item>
+              ) : (<></>)
+            }
         </Form>
       </Modal>
     </div>

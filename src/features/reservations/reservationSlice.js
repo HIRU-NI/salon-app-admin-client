@@ -130,7 +130,9 @@ export const reservationSlice = createSlice({
                         client:action.payload.client, 
                         service:action.payload.service,
                         stylist:action.payload.stylist,
-                        date:action.payload.date} : reservation
+                        date:action.payload.date,
+                        isComplete: action.payload.isComplete
+                    } : reservation
                 })
             })
             .addCase(updateReservation.rejected, (state, action) => {
