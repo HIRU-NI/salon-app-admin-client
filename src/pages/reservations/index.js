@@ -106,8 +106,11 @@ const Reservations = () => {
       return {
         key: index,
         client: `${client.firstName} ${client.lastName}`,
+        client_id: client._id,
         service: service.name,
+        service_id: service._id,
         stylist: stylist.name,
+        stylist_id: stylist._id,
         date: reservation.date,
         id: reservation._id 
       }

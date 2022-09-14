@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 //api functions 
-import {  createReservation } from '../../../features/reservations/reservationSlice';
+import {  createReservation, updateReservation } from '../../../features/reservations/reservationSlice';
 
 import moment from 'moment';
 
@@ -27,9 +27,9 @@ const CreateReservation = ({reservation}) => {
 
 
     const initialValues = reservation ? {
-      client : reservation.client,
-      stylist: reservation.stylist,
-      service: reservation.service,
+      client : reservation.client_id,
+      stylist: reservation.stylist_id,
+      service: reservation.service_id,
       date: moment(reservation.date)
     } : {}
 
@@ -43,7 +43,18 @@ const CreateReservation = ({reservation}) => {
         date: values.date
       }))
     }
-    
+    else {
+      dispatch(updateReservation({
+        id: reservation.id,
+        reservation: {
+          client: values.client,
+          service: values.service,
+          stylist: values.stylist,
+          date: values.date
+        }
+      }))
+    }
+
     setIsModalOpen(false);
     form.resetFields()
   }

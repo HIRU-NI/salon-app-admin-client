@@ -52,6 +52,19 @@ export const deleteReservation = createAsyncThunk('deletereservation', async (id
     }
 })
 
+//update a reservation
+export const updateReservation = createAsyncThunk('updatereservation', async (reservationData, thunkAPI) => {
+    try {
+        const token = thunkAPI.getState().auth.user.token
+        return await reservationService.updateReservation(reservationData.id, reservationData.reservation, token)
+    } catch (error) {
+        const message = error.response.data ||
+        error.message ||
+        error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
 export const reservationSlice = createSlice({
     name: 'reservation',
     initialState,
@@ -105,6 +118,25 @@ export const reservationSlice = createSlice({
                 state.isError = true
                 state.isLoading = false
                 state.message = action.payload
+            })
+            .addCase(updateReservation.pending, state => {
+                state.isLoading = true
+            })
+            .addCase(updateReservation.fulfilled, (state, action) => {
+                state.isSuccess = true
+                state.isLoading = false
+                state.reservations = state.reservations.map(reservation => {
+                    return reservation._id === action.payload._id ? {...reservation, 
+                        client:action.payload.client, 
+                        service:action.payload.service,
+                        stylist:action.payload.stylist,
+                        date:action.payload.date} : reservation
+                })
+            })
+            .addCase(updateReservation.rejected, (state, action) => {
+                state.isError = true
+                state.isLoading = false
+                state.message = action.payload.error
             })
     }
 })

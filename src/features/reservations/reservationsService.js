@@ -26,7 +26,7 @@ const getAllReservations = async (token) => {
     return response.data
 }
 
-//delete client
+//delete reservation
 const deleteReservation = async (id, token) => {
     const config = {
         headers: {
@@ -39,10 +39,24 @@ const deleteReservation = async (id, token) => {
     return response.data
 }
 
+//update a reservation
+const updateReservation = async (id, reservationData, token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const response = await axios.put(API_URL +  `/${id}`, reservationData, config)
+    
+    return response.data
+}
+
 const clientService = {
     createReservation,
     getAllReservations,
-    deleteReservation
+    deleteReservation,
+    updateReservation
 }
 
 export default clientService
