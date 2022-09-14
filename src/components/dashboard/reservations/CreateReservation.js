@@ -33,19 +33,6 @@ const CreateReservation = ({reservation}) => {
       date: moment(reservation.date)
     } : {}
 
-  
-
-// useEffect(() => {
-//     if(isError) {
-//       if(message.email !== '') toast.error(message.error)
-//       if(message.password !== '') toast.error(message.error)
-//     }
-//     if(isSuccess || user) {
-//       //navigate('/')
-//     }
-
-//     dispatch(reset())
-//   }, [user, isError, isSuccess, dispatch, message])
 
   const onFinish = async (values) => {
     if(!reservation) {
@@ -55,8 +42,8 @@ const CreateReservation = ({reservation}) => {
         stylist: values.stylist,
         date: values.date
       }))
-      
     }
+    
     setIsModalOpen(false);
     form.resetFields()
   }
@@ -92,9 +79,6 @@ const CreateReservation = ({reservation}) => {
             wrapperCol={{
                 span: 16,
             }}
-            
-            //   onFinish={onFinish}
-            //   onFinishFailed={onFinishFailed}
             autoComplete="off"
         >
             <Form.Item

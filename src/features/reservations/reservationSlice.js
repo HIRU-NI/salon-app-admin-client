@@ -99,7 +99,7 @@ export const reservationSlice = createSlice({
             .addCase(deleteReservation.fulfilled, (state, action) => {
                 state.isSuccess = true
                 state.isLoading = false
-                state.reservations = state.reservations.filter(reservation => reservation._id !== action.payload.id)
+                state.reservations = state.reservations.filter(reservation => reservation._id !== action.payload._id)
             })
             .addCase(deleteReservation.rejected, (state, action) => {
                 state.isError = true
