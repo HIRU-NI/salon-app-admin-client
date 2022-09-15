@@ -34,8 +34,6 @@ const CreateReservation = ({reservation}) => {
       isComplete: reservation.isComplete ? "completed" : "scheduled"
     } : {}
 
-    console.log(initialValues)
-
   const onFinish = async (values) => {
     if(!reservation) {
       dispatch(createReservation({
@@ -47,7 +45,6 @@ const CreateReservation = ({reservation}) => {
       form.resetFields()
     }
     else {
-      console.log(values.isComplete === "completed" ? true : false)
       dispatch(updateReservation({
         id: reservation.id,
         reservation: {

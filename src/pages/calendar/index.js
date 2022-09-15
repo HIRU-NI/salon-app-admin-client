@@ -24,7 +24,6 @@ const getListData = (value, reservations, services) => {
     }
     return []
   })
-  console.log(value.date())
   return listData || [];
 };
 
