@@ -1,106 +1,73 @@
-import { Badge, Calendar } from 'antd';
-import React from 'react';
+import { Badge, Calendar, Card } from 'antd';
+import {React , useEffect} from 'react';
 
-const getListData = (value) => {
+import { useNavigate } from 'react-router-dom';
+
+
+//redux
+import { useSelector, useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import { getAllReservations, reset } from '../../features/reservations/reservationSlice';
+import moment from 'moment';
+
+
+const getListData = (value, reservations, services) => {
   let listData;
 
-  switch (value.date()) {
-    case 8:
-      listData = [
-        {
-          type: 'warning',
-          content: 'Hairstyle',
-        },
-        {
-          type: 'success',
-          content: 'Hairstyle',
-        },
-      ];
-      break;
-
-    case 10:
-      listData = [
-        {
-          type: 'warning',
-          content: 'Hairstyle',
-        },
-        {
-          type: 'success',
-          content: 'Hairstyle',
-        },
-        {
-          type: 'error',
-          content: 'Hairstyle',
-        },
-      ];
-      break;
-
-    case 15:
-      listData = [
-        {
-          type: 'warning',
-          content: 'Haircut',
-        },
-        {
-          type: 'success',
-          content: 'Haircut',
-        },
-        {
-          type: 'error',
-          content: 'Haircut',
-        },
-        {
-          type: 'error',
-          content: 'Haircut',
-        },
-        {
-          type: 'error',
-          content: 'Haircut',
-        },
-        {
-          type: 'error',
-          content: 'Haircut',
-        },
-      ];
-      break;
-
-    default:
-  }
-
+  listData = reservations.map(reservation => {
+    const service = services.find(service => service._id === reservation.service)
+    if(moment(reservation.date).isSame(value, 'day')){
+      return {
+        content: service.name,
+        type: reservation.isComplete ? 'green' : 'cyan'
+      }
+    }
+    return []
+  })
+  console.log(value.date())
   return listData || [];
 };
 
-const getMonthData = (value) => {
-  if (value.month() === 8) {
-    return 1394;
-  }
-};
-
 const ReservationsCalendar = () => {
-  const monthCellRender = (value) => {
-    const num = getMonthData(value);
-    return num ? (
-      <div className="notes-month">
-        <section>{num}</section>
-        <span>Backlog number</span>
-      </div>
-    ) : null;
-  };
+
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const { user } = useSelector( state => state.auth)
+  const { services } = useSelector( state => state.service)
+  const { reservations , isError,  message } = useSelector(state => state.reservation)
+
 
   const dateCellRender = (value) => {
-    const listData = getListData(value);
+    const listData = getListData(value, reservations, services);
     return (
       <>
         {listData.map((item) => (
           
-            <Badge key={item.content} status={item.type} text={item.content} />
+            <Badge key={item.content} color={item.type} text={item.content} />
          
         ))}
       </>
     );
   };
 
-  return <Calendar dateCellRender={dateCellRender} monthCellRender={monthCellRender} />;
+  useEffect(() => {
+    if(isError) toast.error(message)
+    if(!user) navigate('/login')
+    
+    dispatch(getAllReservations())
+
+    return () => {
+      dispatch(reset())
+    }
+
+  }, [user, navigate, isError, message, dispatch])
+
+  return (
+    <Card>
+      <Calendar dateCellRender={dateCellRender} />
+    </Card>
+  );
 };
 
 export default ReservationsCalendar;
