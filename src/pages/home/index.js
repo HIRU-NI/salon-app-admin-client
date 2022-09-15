@@ -11,12 +11,12 @@ import { Pie, Bar } from '@ant-design/plots';
 
 const dataPie = [
     {
-      type: 'Completed',
-      value: 80,
+      type: 'Scheduled',
+      value: 20,
     },
     {
-      type: 'Pending',
-      value: 20,
+      type: 'Completed',
+      value: 80,
     },
   ];
   const dataBar = [
