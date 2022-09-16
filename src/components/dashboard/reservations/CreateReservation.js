@@ -168,9 +168,7 @@ const CreateReservation = ({ reservation }) => {
               showSearch
               placeholder="Select a client"
               optionFilterProp="children"
-              filterOption={(input, option) =>
-                option.children.toLowerCase().includes(input.toLowerCase())
-              }
+
             >
               {clients.map((client) => {
                 return (
@@ -195,9 +193,6 @@ const CreateReservation = ({ reservation }) => {
               showSearch
               placeholder="Select a stylist"
               optionFilterProp="children"
-              filterOption={(input, option) =>
-                option.children.toLowerCase().includes(input.toLowerCase())
-              }
             >
               {stylists.map((stylist) => {
                 return (

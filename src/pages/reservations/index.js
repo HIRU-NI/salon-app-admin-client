@@ -140,7 +140,7 @@ const Reservations = () => {
     <>
       <CreateReservation/>
       <Search allowClear style={{marginBottom: "20px"}} placeholder="Search by client, stylist or service" onSearch={onSearch}/>
-      <Table columns={columns} dataSource={getreservationData()}  style={{overflow:"scroll"}}/>
+      <Table columns={columns} dataSource={getreservationData()}/>
     </>
   )
 }
