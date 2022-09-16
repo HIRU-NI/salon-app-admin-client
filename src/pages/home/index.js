@@ -95,14 +95,12 @@ const Home = () => {
       if(!user) navigate('/login')
     
       dispatch(getAllReservations())
-
+  
       return () => {
         dispatch(reset())
       }
 
     }, [user, navigate, dispatch, isError, message])
-
-    const pieChartConig = getPieChartConfiguration(reservations)
 
     return (
         <div>
@@ -112,7 +110,7 @@ const Home = () => {
                        
                         title="Reservation Status"
                     >
-                        <Pie {...pieChartConig}/>
+                        <Pie {...getPieChartConfiguration(reservations)} />
                     </Card>  
                 </Col>
                 <Col span={12}>

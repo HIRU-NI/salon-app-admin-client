@@ -37,7 +37,9 @@ const Login = () => {
         navigate('/')
       }
 
-      dispatch(reset())
+      return () => {
+        dispatch(reset())
+      }
     }, [user, isError, isSuccess, dispatch, navigate, message])
     
 
