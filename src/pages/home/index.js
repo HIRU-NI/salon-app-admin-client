@@ -3,22 +3,51 @@ import { React, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 
 //redux
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { Col, Row, Card } from 'antd';
 
 import { Pie, Bar } from '@ant-design/plots';
+import { getAllReservations, reset } from '../../features/reservations/reservationSlice';
+import { toast } from 'react-toastify';
 
-const dataPie = [
+const getPieChartConfiguration = (reservations) => {
+  const pieChartData = [
     {
       type: 'Scheduled',
-      value: 20,
+      value: reservations.filter(reservation=> reservation.isComplete === false).length,
     },
     {
       type: 'Completed',
-      value: 80,
+      value: reservations.filter(reservation=> reservation.isComplete === true).length,
     },
-  ];
+  ]
+
+  const configPie = {
+    appendPadding: 10,
+    data: pieChartData,
+    angleField: 'value',
+    colorField: 'type',
+    radius: 0.9,
+    label: {
+      type: 'inner',
+      offset: '-30%',
+      content: ({ percent }) => `${(percent * 100).toFixed(0)}%`,
+      style: {
+        fontSize: 14,
+        textAlign: 'center',
+      },
+    },
+    interactions: [
+      {
+        type: 'element-active',
+      },
+    ],
+  };
+  
+  return configPie
+} 
+
   const dataBar = [
     {
         stylist: 'stylist 1',
@@ -42,27 +71,7 @@ const dataPie = [
     },
   ];
 
-  const configPie = {
-    appendPadding: 10,
-    data: dataPie,
-    angleField: 'value',
-    colorField: 'type',
-    radius: 0.9,
-    label: {
-      type: 'inner',
-      offset: '-30%',
-      content: ({ percent }) => `${(percent * 100).toFixed(0)}%`,
-      style: {
-        fontSize: 14,
-        textAlign: 'center',
-      },
-    },
-    interactions: [
-      {
-        type: 'element-active',
-      },
-    ],
-  };
+  
   const configBar = {
     data: dataBar,
     xField: 'value',
@@ -76,14 +85,25 @@ const dataPie = [
 const Home = () => {
 
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const { user } = useSelector( state => state.auth)
+    const { reservations , isError,  message } = useSelector(state => state.reservation)
 
     useEffect(() => {
+      if(isError) toast.error(message)
       if(!user) navigate('/login')
-    }, [user, navigate])
     
-    
+      dispatch(getAllReservations())
+
+      return () => {
+        dispatch(reset())
+      }
+
+    }, [user, navigate, dispatch, isError, message])
+
+    const pieChartConig = getPieChartConfiguration(reservations)
+
     return (
         <div>
             <Row gutter={16}>
@@ -92,7 +112,7 @@ const Home = () => {
                        
                         title="Reservation Status"
                     >
-                        <Pie {...configPie}/>
+                        <Pie {...pieChartConig}/>
                     </Card>  
                 </Col>
                 <Col span={12}>
