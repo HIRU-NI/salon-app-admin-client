@@ -31,6 +31,7 @@ const columns = [
     key: 'client_name',
     responsive: ['md'],
     render: (text) => <div>{text}</div>,
+    
   },
   {
     title: 'Service',
@@ -48,7 +49,8 @@ const columns = [
     key: 'date',
     render: (value) => {
       return moment(value).format('DD/MM/YYYY')
-    }
+    },
+    sorter: (a, b) => moment(a.date).startOf('day').unix() - moment(b.date).startOf('day').unix(),
   },
   {
     title: 'Time',
@@ -56,7 +58,7 @@ const columns = [
     key: 'date',
     render: (value) => {
       return moment(value).format('h:mm A')
-    }
+    },
   },
   {
     title: 'Status',
