@@ -13,6 +13,7 @@ import {
   reset,
 } from "../../features/reservations/reservationSlice";
 import { toast } from "react-toastify";
+import moment from "moment";
 
 const getPieChartConfiguration = (reservations) => {
   const pieChartData = [
@@ -54,37 +55,41 @@ const getPieChartConfiguration = (reservations) => {
 
   return configPie;
 };
-const dataBar = [
-  {
-    stylist: "stylist 1",
-    value: 1,
-  },
-  {
-    stylist: "stylist 2",
-    value: 4,
-  },
-  {
-    stylist: "stylist 3",
-    value: 5,
-  },
-  {
-    stylist: "stylist 4",
-    value: 2,
-  },
-  {
-    stylist: "stylist 5",
-    value: 8,
-  },
-];
 
-const configBar = {
-  data: dataBar,
-  xField: "value",
-  yField: "stylist",
-  seriesField: "stylist",
-  legend: {
-    position: "top-left",
-  },
+const getBarChartConfiguration = (reservations, stylists) => {
+  const stylistsToday = reservations.filter(
+    (res) => moment(res.date).diff(moment(), "days") === 0
+  ).map(res => res.stylist)
+  
+  const barChartData = stylistsToday.map((stylist) => {
+    const currentStylist = stylists.find((stlst) => stlst._id === stylist);
+    const reservationsToday = reservations.filter(
+      (res) =>
+        moment(res.date).diff(moment(), "days") === 0 && res.stylist === stylist
+    );
+    console.log(stylists);
+    return {
+      stylist: currentStylist ? currentStylist.name : "",
+      value: reservationsToday.length,
+    };
+  });
+
+  const configBar = {
+    data: barChartData,
+    xField: "value",
+    yField: "stylist",
+    seriesField: "stylist",
+    legend: {
+      position: "top-left",
+    },
+    meta: {
+      value: {
+        values: [0,8]
+      }
+    }
+  };
+
+  return configBar;
 };
 
 const Home = () => {
@@ -92,12 +97,15 @@ const Home = () => {
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.auth);
+  const { stylists } = useSelector((state) => state.stylist);
   const { reservations, isError, message } = useSelector(
     (state) => state.reservation
   );
 
   useEffect(() => {
-    if (isError) {toast.error(message)};
+    if (isError) {
+      toast.error(message);
+    }
     if (!user) navigate("/login");
 
     if (user) dispatch(getAllReservations());
@@ -117,7 +125,7 @@ const Home = () => {
         </Col>
         <Col span={12}>
           <Card title="Stylist Allocations">
-            <Bar {...configBar} />
+            <Bar {...getBarChartConfiguration(reservations, stylists)} />
           </Card>
         </Col>
       </Row>
