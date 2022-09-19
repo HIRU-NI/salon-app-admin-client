@@ -97,7 +97,7 @@ const Home = () => {
   );
 
   useEffect(() => {
-    if (isError) toast.error(message);
+    if (isError) {toast.error(message)};
     if (!user) navigate("/login");
 
     if (user) dispatch(getAllReservations());

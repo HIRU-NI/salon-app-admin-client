@@ -13,20 +13,20 @@ import {
 } from "../../../features/reservations/reservationSlice";
 
 import moment from "moment";
+import { toast } from "react-toastify";
 
 const { Option } = Select;
 
 const getDisabledHours = (hours) => {
-  
-  let disabledHours = hours.filter((hour => {
-    if (hour < 8|| hour > 17) return hour
-    return null
-  }))
+  let disabledHours = hours.filter((hour) => {
+    if (hour < 8 || hour > 17) return hour;
+    return null;
+  });
 
-  disabledHours.push(0)
-  
-  return disabledHours || []
-}
+  disabledHours.push(0);
+
+  return disabledHours || [];
+};
 
 //disable dates before today
 const disabledDate = (current) => {
@@ -35,7 +35,7 @@ const disabledDate = (current) => {
 
 //disable non-working hours
 const disabledTime = (now) => ({
-  disabledHours: () => getDisabledHours([...Array(24).keys()])
+  disabledHours: () => getDisabledHours([...Array(24).keys()]),
 });
 
 const CreateReservation = ({ reservation }) => {
@@ -48,6 +48,7 @@ const CreateReservation = ({ reservation }) => {
   const { stylists } = useSelector((state) => state.stylist);
   const { services } = useSelector((state) => state.service);
   const { clients } = useSelector((state) => state.client);
+  const { reservations } = useSelector((state) => state.reservation);
 
   const initialValues = reservation
     ? {
@@ -94,8 +95,58 @@ const CreateReservation = ({ reservation }) => {
     //form.resetFields()
   };
 
+  const checkAvailablility = (date, stylist) => {
+    let availabilityMessage;
+
+    if (
+      reservations.find(
+        (res) =>
+          moment(res.date).diff(date, "minutes") === 0 &&
+          res.stylist === stylist
+      )
+    ) {
+      if (!reservation)
+        availabilityMessage =
+          "The selected stylist is not available during the given time slot";
+      else if (
+        reservations.find(
+          (res) =>
+            moment(res.date).diff(date, "minutes") === 0 &&
+            res.stylist === stylist
+        ).length > 1
+      )
+        availabilityMessage =
+          "The selected stylist is not available during the given time slot";
+    }
+    console.log(
+      reservations.filter(
+        (res) =>
+          res.stylist === stylist && moment(res.date).diff(date, "days") === 0
+      ).length
+    );
+    if (
+      reservations.filter(
+        (res) =>
+          res.stylist === stylist && moment(res.date).diff(date, "days") === 0
+      ).length >= 8 && moment(reservation.date).diff(date, "days") !== 0
+    ) {
+      availabilityMessage =
+        "The selected stylist is not available on the given date";
+    }
+
+    return availabilityMessage;
+  };
+
   const handleOk = () => {
-    form.submit();
+    const availabilityMessage = checkAvailablility(
+      moment(form.getFieldValue("date")),
+      form.getFieldValue("stylist")
+    );
+    if (!availabilityMessage) {
+      form.submit();
+    } else {
+      toast.error(availabilityMessage);
+    }
   };
 
   const handleCancel = () => {
@@ -168,7 +219,6 @@ const CreateReservation = ({ reservation }) => {
               showSearch
               placeholder="Select a client"
               optionFilterProp="children"
-
             >
               {clients.map((client) => {
                 return (
@@ -202,6 +252,7 @@ const CreateReservation = ({ reservation }) => {
                 );
               })}
             </Select>
+            {/* {availabilityMessage ? <Tag color="volcano" style={{marginTop: "10px"}}>{availabilityMessage}</Tag> : <></>} */}
           </Form.Item>
           <Form.Item
             label="Date & Time"
@@ -218,7 +269,7 @@ const CreateReservation = ({ reservation }) => {
                 defaultValue: moment("00:00:00", "HH:mm:ss"),
                 format: "HH:mm",
                 minuteStep: 30,
-                hideDisabledOptions: true
+                hideDisabledOptions: true,
               }}
               format="YYYY-MM-DD HH:mm"
               disabledDate={disabledDate}
