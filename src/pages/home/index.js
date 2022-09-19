@@ -67,7 +67,6 @@ const getBarChartConfiguration = (reservations, stylists) => {
       (res) =>
         moment(res.date).diff(moment(), "days") === 0 && res.stylist === stylist
     );
-    console.log(stylists);
     return {
       stylist: currentStylist ? currentStylist.name : "",
       value: reservationsToday.length,

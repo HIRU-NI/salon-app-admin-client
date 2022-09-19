@@ -1,115 +1,124 @@
-import {React, useEffect} from 'react'
+import { React, useEffect } from "react";
 
 //redux
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from "react-redux";
 
-//api functions 
-import { login, reset } from '../../features/auth/authSlice';
+//api functions
+import { login, reset } from "../../features/auth/authSlice";
 
 //router
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 //alerts
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 //antd components
-import { Button, Form, Input,  Typography, Spin } from 'antd';
+import { Button, Form, Input, Typography, Spin } from "antd";
 
 //styles
-import "../../assests/styles/signup.css"
+import "../../assests/styles/signup.css";
 
-const {Title} = Typography
+const { Title } = Typography;
 
 const Login = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
 
-    const { user, isLoading, isError, isSuccess, message } = useSelector(
-        (state) => state.auth
-    ) 
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
+    }
+    if (isSuccess || user) {
+      navigate("/");
+    }
 
-    useEffect(() => {
-      if(isError) {
-        toast.error(message)
-      }
-      if(isSuccess || user) {
-        navigate('/')
-      }
-
-      return () => {
-        dispatch(reset())
-      }
-    }, [user, isError, isSuccess, dispatch, navigate, message])
-    
-
-    const onFinish = (values) => {
-        const userData = {
-            email: values.email,
-            password: values.password
-        }
-        dispatch(login(userData))
+    return () => {
+      dispatch(reset());
     };
+  }, [user, isError, isSuccess, dispatch, navigate, message]);
 
-    return (
-        <Form
-        className='signup_main'
-        name="basic"
-        labelCol={{
-            span: 8,
-        }}
+  const onFinish = (values) => {
+    const userData = {
+      email: values.email,
+      password: values.password,
+    };
+    dispatch(login(userData));
+  };
+
+  return (
+    <Form
+      className="signup_main"
+      name="basic"
+      labelCol={{
+        span: 8,
+      }}
+      wrapperCol={{
+        span: 16,
+      }}
+      initialValues={{
+        remember: true,
+      }}
+      onFinish={onFinish}
+    >
+      <Title level={2} className="signup_titile">
+        Login
+      </Title>
+      <Form.Item
+        label="Email"
+        name="email"
+        rules={[
+          {
+            type: "email",
+            message: "The input is not valid E-mail!",
+          },
+          {
+            required: true,
+            message: "Please input your E-mail!",
+          },
+        ]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        label="Password"
+        name="password"
+        rules={[
+          {
+            required: true,
+            message: "Please input your password!",
+          },
+        ]}
+      >
+        <Input.Password />
+      </Form.Item>
+      <Form.Item
         wrapperCol={{
-            span: 16,
+          offset: 8,
+          span: 16,
         }}
-        initialValues={{
-            remember: true,
+      >
+        <a href="/login">
+          Forgot password?
+        </a>
+      </Form.Item>
+      <Form.Item
+        wrapperCol={{
+          offset: 8,
+          span: 16,
         }}
-        onFinish={onFinish}
-        >
-            <Title level={2} className="signup_titile">Login</Title>
-            <Form.Item
-                label="Email"
-                name="email"
-                rules={[
-                    {
-                    type: 'email',
-                    message: 'The input is not valid E-mail!',
-                    },
-                    {
-                    required: true,
-                    message: 'Please input your E-mail!',
-                    },
-                ]}
-            >
-                <Input />
-            </Form.Item>
-            <Form.Item
-                label="Password"
-                name="password"
-                rules={[
-                {
-                    required: true,
-                    message: 'Please input your password!',
-                },
-                ]}
-            >
-                <Input.Password />
-            </Form.Item>
-            <Form.Item
-                wrapperCol={{
-                offset: 8,
-                span: 16,
-                }}
-            >
-                <Spin spinning={isLoading}>
-                    <Button type="primary" htmlType="submit">
-                        Login
-                    </Button>
-                </Spin>
-            </Form.Item>
-        </Form>
-    
-  )
-}
+      >
+        <Spin spinning={isLoading}>
+          <Button type="primary" htmlType="submit">
+            Login
+          </Button>
+        </Spin>
+      </Form.Item>
+    </Form>
+  );
+};
 
-export default Login
+export default Login;
