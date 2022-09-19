@@ -47,7 +47,6 @@ const navs = [
         <Menu
         theme="light"
         mode="inline"
-        inlineCollapsed={true}
         defaultSelectedKeys={[1]}
         items={navs.map(
           (nav) => ({
