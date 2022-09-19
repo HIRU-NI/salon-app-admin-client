@@ -95,9 +95,11 @@ const CreateReservation = ({ reservation }) => {
     //form.resetFields()
   };
 
+  //chek availablility of the stylist on selected time/date
   const checkAvailablility = (date, stylist) => {
     let availabilityMessage;
 
+    //checks whether the time slot is available for the given stylist
     if (
       reservations.find(
         (res) =>
@@ -105,9 +107,11 @@ const CreateReservation = ({ reservation }) => {
           res.stylist === stylist
       )
     ) {
+      //creating a new reservation
       if (!reservation)
         availabilityMessage =
           "The selected stylist is not available during the given time slot";
+      //updating an existing reservation
       else if (
         reservations.find(
           (res) =>
@@ -118,20 +122,22 @@ const CreateReservation = ({ reservation }) => {
         availabilityMessage =
           "The selected stylist is not available during the given time slot";
     }
-    console.log(
-      reservations.filter(
-        (res) =>
-          res.stylist === stylist && moment(res.date).diff(date, "days") === 0
-      ).length
-    );
+  
+    //checks whether the stylist is available on given date
     if (
       reservations.filter(
         (res) =>
           res.stylist === stylist && moment(res.date).diff(date, "days") === 0
-      ).length >= 8 && moment(reservation.date).diff(date, "days") !== 0
+      ).length >= 8
     ) {
-      availabilityMessage =
-        "The selected stylist is not available on the given date";
+      //creating a new reservation
+      if (!reservation)
+        availabilityMessage =
+          "The selected stylist is not available on the given date";
+      //updating an existing reservation
+      else if (moment(reservation.date).diff(date, "days") !== 0)
+        availabilityMessage =
+          "The selected stylist is not available on the given date";
     }
 
     return availabilityMessage;
