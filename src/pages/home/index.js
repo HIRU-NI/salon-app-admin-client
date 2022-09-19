@@ -14,6 +14,7 @@ import {
 } from "../../features/reservations/reservationSlice";
 import { toast } from "react-toastify";
 import moment from "moment";
+import { getAllStylists } from "../../features/stylists/stylistSlice";
 
 const getPieChartConfiguration = (reservations) => {
   const pieChartData = [
@@ -107,7 +108,10 @@ const Home = () => {
     }
     if (!user) navigate("/login");
 
-    if (user) dispatch(getAllReservations());
+    if (user) {
+      dispatch(getAllReservations())
+      dispatch(getAllStylists())
+    }
 
     return () => {
       dispatch(reset());
