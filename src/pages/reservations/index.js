@@ -18,6 +18,7 @@ import { getAllStylists, reset as resetStylists } from '../../features/stylists/
 import { getAllServices, reset as resetServices } from '../../features/services/serviceSlice';
 import { getAllReservations, reset as resetReservations } from '../../features/reservations/reservationSlice';
 import { toast } from 'react-toastify';
+import moment from 'moment';
 
 //search box
 const { Search } = Input
@@ -42,9 +43,20 @@ const columns = [
     key: 'stylist_name',
   },
   {
-    title: 'Date & time',
+    title: 'Date',
     dataIndex: 'date',
     key: 'date',
+    render: (value) => {
+      return moment(value).format('DD/MM/YYYY')
+    }
+  },
+  {
+    title: 'Time',
+    dataIndex: 'date',
+    key: 'date',
+    render: (value) => {
+      return moment(value).format('h:mm A')
+    }
   },
   {
     title: 'Status',
