@@ -11,6 +11,7 @@ import {
   reset,
 } from "../../features/reservations/reservationSlice";
 import moment from "moment";
+import { getAllServices, reset as resetServices } from "../../features/services/serviceSlice";
 
 const getListData = (value, reservations, services) => {
   let listData;
@@ -19,13 +20,13 @@ const getListData = (value, reservations, services) => {
     const service = services.find(
       (service) => service._id === reservation.service
     );
-    if (moment(reservation.date).isSame(value, "day")) {
+    if (moment(reservation.date).isSame(value, "day") && service) {
       return {
-        content: service.name,
+        content:  service.name,
         type: reservation.isComplete ? "green" : "cyan",
       };
     }
-    return [];
+    return null
   });
   return listData || [];
 };
@@ -40,27 +41,31 @@ const ReservationsCalendar = () => {
     (state) => state.reservation
   );
 
-  const dateCellRender = (value) => {
-    const listData = getListData(value, reservations, services);
-    return (
-      <>
-        {listData.map((item) => (
-          <Badge key={item.content} color={item.type} text={item.content} />
-        ))}
-      </>
-    );
-  };
-
   useEffect(() => {
     if (isError) toast.error(message);
     if (!user) navigate("/login");
 
     dispatch(getAllReservations());
+    dispatch(getAllServices())
 
     return () => {
       dispatch(reset());
+      dispatch(resetServices())
     };
   }, [user, navigate, isError, message, dispatch]);
+
+  const dateCellRender = (value) => {
+    const listData = getListData(value, reservations, services);
+    
+    return (
+      <>
+        {listData.map((item) => (
+          item ? <Badge key={item.content} color={item.type} text={item.content} /> : <></>
+        ))}
+      </>
+    );
+  };
+
 
   return (
     <Card>
