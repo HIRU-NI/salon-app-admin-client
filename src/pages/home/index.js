@@ -58,15 +58,17 @@ const getPieChartConfiguration = (reservations) => {
 };
 
 const getBarChartConfiguration = (reservations, stylists) => {
-  const stylistsToday = reservations.filter(
-    (res) => moment(res.date).diff(moment(), "days") === 0
-  ).map(res => res.stylist)
+  let stylistsToday = reservations.filter(
+    (res) => moment(res.date).isSame(moment(), "days")
+  )
+
+  stylistsToday = stylistsToday.map(res => res.stylist)
   
   const barChartData = stylistsToday.map((stylist) => {
     const currentStylist = stylists.find((stlst) => stlst._id === stylist);
     const reservationsToday = reservations.filter(
       (res) =>
-        moment(res.date).diff(moment(), "days") === 0 && res.stylist === stylist
+        moment(res.date).isSame(moment(), "days") && res.stylist === stylist
     );
     return {
       stylist: currentStylist ? currentStylist.name : "",
