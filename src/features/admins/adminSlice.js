@@ -23,6 +23,18 @@ export const getAllAdmins = createAsyncThunk('getadmins', async (_, thunkAPI) =>
     }
 })
 
+//register user
+export const addUser = createAsyncThunk('adduser', async (user, thunkAPI) => {
+    try {
+        return await adminService.addUser(user)
+    } catch (error) {
+        const message = error.response.data ||
+        error.message ||
+        error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
 export const adminSlice = createSlice({
     name: 'client',
     initialState,
@@ -49,6 +61,20 @@ export const adminSlice = createSlice({
             //     state.isLoading = false
             //     state.message = action.payload
             // })
+            .addCase(addUser.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(addUser.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.admins.push(action.payload)
+                
+            })
+            .addCase(addUser.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+            })
             .addCase(getAllAdmins.pending, state => {
                 state.isLoading = true
             })

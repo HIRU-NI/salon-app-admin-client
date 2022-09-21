@@ -1,50 +1,39 @@
 //antd components
-import { Space, Table, Button } from 'antd';
+import { Table } from "antd";
+
+import { React, useEffect } from "react";
+
+import { useNavigate } from "react-router-dom";
 
 //app components
-// import CreateClient from '../../components/dashboard/clients/CreateClient';
-import DeleteClient from '../../components/dashboard/clients/DeleteClient';
-
-
-import {React, useEffect} from 'react';
-
-import { useNavigate } from 'react-router-dom';
+import AddUser from "../../components/dashboard/admin/AddUser";
 
 //redux
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from "react-redux";
 
-import { getAllAdmins, reset } from '../../features/admins/adminSlice';
+import { getAllAdmins, reset } from "../../features/admins/adminSlice";
+import { toast } from "react-toastify";
 
 const columns = [
   {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
+    title: "Name",
+    dataIndex: "name",
+    key: "name",
     render: (text) => <div>{text}</div>,
   },
   {
-    title: 'Email',
-    dataIndex: 'email',
-    key: 'email',
-  },
-  {
-    title: 'Action',
-    key: 'action',
-    render: (_, record) => (
-      <Space size="middle">
-        <Button type="dashed">Edit</Button>
-        <DeleteClient clientID={record.id}/>
-      </Space>
-    ),
+    title: "Email",
+    dataIndex: "email",
+    key: "email",
   },
 ];
 
 const Admins = () => {
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const { user } = useSelector( state => state.auth)
-  const { admins, isError,  message } = useSelector(state => state.admin)
+  const { user, isError:isUserError ,  message: userMessage  } = useSelector((state) => state.auth);
+  const { admins, isError, message } = useSelector((state) => state.admin);
 
   const getAdminData = () => {
     const adminData = admins.map((admin, index) => {
@@ -53,30 +42,31 @@ const Admins = () => {
         name: `${admin.firstName} ${admin.lastName}`,
         email: admin.email,
         phone: admin.phone,
-        id: admin._id 
-      }
-    })
+        id: admin._id,
+      };
+    });
 
-    return adminData
-  }
+    return adminData;
+  };
 
   useEffect(() => {
-    if(isError) console.log(message)
-    if(!user) navigate('/login')
+    if (isError) toast.error(message.error);
+    if (isUserError) toast.error(userMessage.error);
+    if (!user) navigate("/login");
 
-    dispatch(getAllAdmins())
+    dispatch(getAllAdmins());
 
     return () => {
-      dispatch(reset())
-    }
-  }, [user, navigate, dispatch, isError, message])
+      dispatch(reset());
+    };
+  }, [user, navigate, dispatch, isError, message, isUserError, userMessage]);
 
   return (
     <>
-      {/* <CreateClient /> */}
+      <AddUser />
       <Table columns={columns} dataSource={getAdminData()} />
     </>
-  )
-}
+  );
+};
 
 export default Admins;
