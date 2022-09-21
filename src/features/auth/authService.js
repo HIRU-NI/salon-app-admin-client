@@ -5,9 +5,11 @@ const API_URL = '/'
 
 //register user
 const signup = async (userData) => {
+    console.log("here")
     const response = await axios.post(API_URL + 'signup', userData, {headers:{
         "Content-Type": "application/json",
     }})
+   
     if(response.data) {
         localStorage.setItem('user', JSON.stringify(response.data.user))
     }
@@ -15,7 +17,7 @@ const signup = async (userData) => {
     return response.data
 }
 
-//register user
+//login user
 const login = async (userData) => {
     const response = await axios.post(API_URL + 'login', userData, {headers:{
         "Content-Type": "application/json",
