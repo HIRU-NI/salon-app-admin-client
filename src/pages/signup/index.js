@@ -43,10 +43,10 @@ const Signup = () => {
 
   useEffect(() => {
     if (isError) {
-       toast.error(message.error);
+      toast.error(message.error);
     }
 
-    if(!token) navigate("/login")
+    if (!token) navigate("/login");
 
     if (isSuccess || user) {
       navigate("/");
@@ -61,7 +61,7 @@ const Signup = () => {
       firstName: values.first,
       lastName: values.last,
       password: values.password,
-      token: token
+      token: token,
     };
 
     dispatch(signup(userData));
@@ -69,6 +69,7 @@ const Signup = () => {
 
   return (
     <Form
+      validateTrigger="onBlur"
       initialValues={initialValues}
       className="signup_main"
       name="basic"

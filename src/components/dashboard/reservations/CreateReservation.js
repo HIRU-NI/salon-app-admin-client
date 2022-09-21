@@ -122,7 +122,7 @@ const CreateReservation = ({ reservation }) => {
         availabilityMessage =
           "The selected stylist is not available during the given time slot";
     }
-  
+
     //checks whether the stylist is available on given date
     if (
       reservations.filter(
@@ -173,6 +173,7 @@ const CreateReservation = ({ reservation }) => {
       >
         <Form
           initialValues={reservation ? initialValues : null}
+          validateTrigger="onBlur"
           onFinish={onFinish}
           form={form}
           name="create-client"

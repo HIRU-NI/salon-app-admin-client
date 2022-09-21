@@ -47,6 +47,7 @@ const AddUser = () => {
       <Modal title="Add New User" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         <Form
             onFinish={onFinish}
+            validateTrigger="onBlur"
             form={form}
             name="add-user"
             labelCol={{

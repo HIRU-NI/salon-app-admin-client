@@ -53,6 +53,7 @@ const Login = () => {
     <Form
       className="signup_main"
       name="basic"
+      validateTrigger="onBlur"
       labelCol={{
         span: 8,
       }}
