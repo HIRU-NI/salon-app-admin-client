@@ -25,7 +25,7 @@ import {
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 //styles
-import '../../assests/styles/calendar.css'
+import "../../assests/styles/calendar.css";
 
 const getListData = (value, reservations, services, clients) => {
   let listData;
@@ -81,7 +81,6 @@ const ReservationsCalendar = () => {
         droppableId={value.toString()}
         key={value.toString()}
         index={value.toString()}
-       
       >
         {(provided, snapshot) => {
           return (
@@ -89,7 +88,9 @@ const ReservationsCalendar = () => {
               ref={provided.innerRef}
               {...provided.droppableProps}
               key={value.toString()}
-              className={`droppable-main ${snapshot.isDraggingOver? 'is-dragging-over' : ''}`}
+              className={`droppable-main ${
+                snapshot.isDraggingOver ? "is-dragging-over" : ""
+              }`}
               style={{ height: "100%" }}
             >
               {/* <div>Hello</div> */}
@@ -106,12 +107,14 @@ const ReservationsCalendar = () => {
                         let content = <></>;
                         const client = clients.find(
                           (client) => client._id === item.client
-                        )
+                        );
 
                         content = (
                           <>
                             <p>
-                              {client ? client.firstName + ' ' + client.lastName : ''}
+                              {client
+                                ? client.firstName + " " + client.lastName
+                                : ""}
                             </p>
                             <p>{item.date}</p>
                           </>
@@ -129,8 +132,20 @@ const ReservationsCalendar = () => {
                               <Badge
                                 key={index}
                                 color={item.type}
-                                text={<span style={{color: snapshot.isDragging ? '#ffffff' : ''}}>{item.content}</span>}
-                                className={snapshot.isDragging ? 'is-dragging' : ''}
+                                text={
+                                  <span
+                                    style={{
+                                      color: snapshot.isDragging
+                                        ? "#ffffff"
+                                        : "",
+                                    }}
+                                  >
+                                    {item.content}
+                                  </span>
+                                }
+                                className={
+                                  snapshot.isDragging ? "is-dragging" : ""
+                                }
                               />
                             </Popover>
                           </div>
@@ -158,14 +173,34 @@ const ReservationsCalendar = () => {
       (reservation) => reservation._id === draggableId
     );
 
-    if(!destination) return
+    if (!destination) return;
+
+    if (destination.droppableId === source.droppableId) {
+      return;
+    }
 
     if (moment(destination.droppableId) < moment()) {
       toast.warning("Cannot move to previous dates");
       return;
     }
 
-    if (destination.droppableId === source.droppableId) {
+    const thisDate = moment(destination.droppableId)
+
+    console.log(
+      reservations.find(
+        (res) =>
+          moment(res.date).isSame(moment(reservation.date).set({D:thisDate.date()}), 'minutes') &&
+          res.stylist === reservation.stylist && res._id !== reservation._id
+      )
+    );
+    if (
+      reservations.find(
+        (res) =>
+        moment(res.date).isSame(moment(reservation.date).set({D:thisDate.date()}), 'minutes') &&
+        res.stylist === reservation.stylist && res._id !== reservation._id
+      )
+    ) {
+      toast.error("Stylist is occupied in the given timeslot");
       return;
     }
 
@@ -176,7 +211,10 @@ const ReservationsCalendar = () => {
           client: reservation.client,
           service: reservation.service,
           stylist: reservation.stylist,
-          date: moment(destination.droppableId),
+          date: moment(destination.droppableId).set({
+            h: moment(reservation.date).hour(),
+            m: moment(reservation.date).minute(),
+          }),
           isComplete: reservation.isComplete,
         },
       })
