@@ -16,10 +16,16 @@ import {
   getAllServices,
   reset as resetServices,
 } from "../../features/services/serviceSlice";
+import {
+  getAllClients,
+  reset as resetClients,
+} from "../../features/clients/clientSlice";
 
 //drag n drop
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { getAllClients } from "../../features/clients/clientSlice";
+
+//styles
+import '../../assests/styles/calendar.css'
 
 const getListData = (value, reservations, services, clients) => {
   let listData;
@@ -33,8 +39,8 @@ const getListData = (value, reservations, services, clients) => {
         content: service.name,
         type: reservation.isComplete ? "green" : "cyan",
         id: reservation._id,
-        date : moment(reservation.date).format("DD/MM/YY, hh:mm A"),
-        clientName: clients.find(client => client._id === reservation.client).firstName + ' ' + clients.find(client => client._id === reservation.client).lastName
+        date: moment(reservation.date).format("DD/MM/YY, hh:mm A"),
+        client: reservation.client,
       };
     }
     return null;
@@ -59,69 +65,79 @@ const ReservationsCalendar = () => {
 
     dispatch(getAllReservations());
     dispatch(getAllServices());
-    dispatch(getAllClients())
+    dispatch(getAllClients());
 
     return () => {
       dispatch(reset());
       dispatch(resetServices());
+      dispatch(resetClients());
     };
   }, [user, navigate, isError, message, dispatch]);
 
   const dateCellRender = (value) => {
     const listData = getListData(value, reservations, services, clients);
-
     return (
       <Droppable
         droppableId={value.toString()}
         key={value.toString()}
         index={value.toString()}
+       
       >
-        {(provided) => {
-          let index = 0;
+        {(provided, snapshot) => {
           return (
             <div
               ref={provided.innerRef}
               {...provided.droppableProps}
               key={value.toString()}
+              className={`droppable-main ${snapshot.isDraggingOver? 'is-dragging-over' : ''}`}
+              style={{ height: "100%" }}
             >
+              {/* <div>Hello</div> */}
               {listData
                 .filter((data) => data != null)
-                .map((item) => {
-                  if (item) {
-                    index++;
-                    return (
-                      <Draggable
-                        draggableId={item.id}
-                        index={index + 1}
-                        key={item.id}
-                      >
-                        {(provided) => {
-                          const content = (
-                            <>
-                              <p>{item.clientName}</p>
-                              <p>{item.date}</p>
-                            </>
-                          );
-                          return (
-                            <div
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              ref={provided.innerRef}
+                .map((item, index) => {
+                  return (
+                    <Draggable
+                      draggableId={item.id}
+                      index={index + 1}
+                      key={item.id}
+                    >
+                      {(provided, snapshot) => {
+                        let content = <></>;
+                        const client = clients.find(
+                          (client) => client._id === item.client
+                        )
+
+                        content = (
+                          <>
+                            <p>
+                              {client ? client.firstName + ' ' + client.lastName : ''}
+                            </p>
+                            <p>{item.date}</p>
+                          </>
+                        );
+                        return (
+                          <div
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            ref={provided.innerRef}
+                          >
+                            <Popover
+                              content={content}
+                              title="Reservation Details"
                             >
-                              <Popover content={content} title="Reservation Details">
-                                <Badge
-                                  key={index}
-                                  color={item.type}
-                                  text={item.content}
-                                />
-                              </Popover>
-                            </div>
-                          );
-                        }}
-                      </Draggable>
-                    );
-                  }
-                  return <></>;
+                              <Badge
+                                key={index}
+                                color={item.type}
+                                text={item.content}
+                                className={snapshot.isDragging ? 'is-dragging' : ''}
+                              />
+                            </Popover>
+                          </div>
+                        );
+                      }}
+                    </Draggable>
+                  );
                 })}
               {provided.placeholder}
             </div>
@@ -142,7 +158,12 @@ const ReservationsCalendar = () => {
       (reservation) => reservation._id === draggableId
     );
 
-    console.log(destination);
+    if(!destination) return
+
+    if (moment(destination.droppableId) < moment()) {
+      toast.warning("Cannot move to previous dates");
+      return;
+    }
 
     if (destination.droppableId === source.droppableId) {
       return;

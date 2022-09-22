@@ -1,0 +1,21 @@
+.ant-picker-cell:hover:not(.ant-picker-cell-in-view) .ant-picker-cell-inner, .ant-picker-cell:hover:not(.ant-picker-cell-selected):not(.ant-picker-cell-range-start):not(.ant-picker-cell-range-end):not(.ant-picker-cell-range-hover-start):not(.ant-picker-cell-range-hover-end) .ant-picker-cell-inner {
+    background: #ffffff !important;
+    z-index: 0;
+}
+
+.droppable-main{
+    height: 100% !important;
+}
+
+.is-dragging {
+    background: #1890ff;
+    padding: 1px 10px !important;
+    border-radius: 10px;
+    opacity: 0.9;
+    z-index: 3;
+    color: #ffffff !important;
+}
+
+.is-dragging-over {
+    background: #f5f5f5;
+}
