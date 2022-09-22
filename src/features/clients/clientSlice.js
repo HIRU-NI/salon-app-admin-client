@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
+import { toast } from "react-toastify"
 
 import clientService from './clientService'
 
@@ -82,6 +83,7 @@ export const clientSlice = createSlice({
                 state.isSuccess = true
                 state.isLoading = false
                 state.clients.push(action.payload)
+                toast.success("New client added successfully")
             })
             .addCase(createClient.rejected, (state, action) => {
                 state.isError = true
@@ -108,6 +110,7 @@ export const clientSlice = createSlice({
                 state.isSuccess = true
                 state.isLoading = false
                 state.clients = state.clients.filter(client => client._id !== action.payload._id)
+                toast.success("Client deleted successfully")
             })
             .addCase(deleteClient.rejected, (state, action) => {
                 state.isError = true
@@ -127,6 +130,7 @@ export const clientSlice = createSlice({
                         lastName:action.payload.lastName,
                         phone:action.payload.phone} : client
                 })
+                toast.success("Client details updated successfully")
             })
             .addCase(updateClient.rejected, (state, action) => {
                 state.isError = true
