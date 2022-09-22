@@ -129,7 +129,7 @@ const ReservationsCalendar = () => {
                               <Badge
                                 key={index}
                                 color={item.type}
-                                text={item.content}
+                                text={<span style={{color: snapshot.isDragging ? '#ffffff' : ''}}>{item.content}</span>}
                                 className={snapshot.isDragging ? 'is-dragging' : ''}
                               />
                             </Popover>
