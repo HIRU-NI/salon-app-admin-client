@@ -184,16 +184,35 @@ const ReservationsCalendar = () => {
       return;
     }
 
-    const thisDate = moment(destination.droppableId)
-    
+    const thisDate = moment(destination.droppableId);
+
     if (
       reservations.find(
         (res) =>
-        moment(res.date).isSame(moment(reservation.date).set({D:thisDate.date()}), 'minutes') &&
-        res.stylist === reservation.stylist && res._id !== reservation._id
+          moment(res.date).isSame(
+            moment(reservation.date).set({ D: thisDate.date() }),
+            "minutes"
+          ) &&
+          res.stylist === reservation.stylist &&
+          res._id !== reservation._id
       )
     ) {
-      toast.error("Stylist is occupied in the given timeslot");
+      toast.error("Stylist is not available during the given timeslot");
+      return;
+    }
+
+    if (
+      reservations.filter(
+        (res) =>
+          moment(res.date).isSame(
+            moment(destination.droppableId),
+            "days"
+          ) &&
+          res.stylist === reservation.stylist &&
+          res._id !== reservation._id
+      ).length >= 8
+    ) {
+      toast.error("Stylist not available on the given date");
       return;
     }
 
