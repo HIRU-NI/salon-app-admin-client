@@ -31,7 +31,7 @@ const columns = [
     key: 'client_name',
     responsive: ['md'],
     render: (text) => <div>{text}</div>,
-    sorter: (a, b) => a.client -b.client
+    sorter: (a, b) => a.client.localeCompare(b.client)
     
   },
   {

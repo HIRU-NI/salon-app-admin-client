@@ -185,14 +185,7 @@ const ReservationsCalendar = () => {
     }
 
     const thisDate = moment(destination.droppableId)
-
-    console.log(
-      reservations.find(
-        (res) =>
-          moment(res.date).isSame(moment(reservation.date).set({D:thisDate.date()}), 'minutes') &&
-          res.stylist === reservation.stylist && res._id !== reservation._id
-      )
-    );
+    
     if (
       reservations.find(
         (res) =>
