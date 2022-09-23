@@ -20,6 +20,7 @@ const columns = [
     dataIndex: "name",
     key: "name",
     render: (text) => <div>{text}</div>,
+    sorter: (a, b) => a.name.localeCompare(b.name)
   },
   {
     title: "Email",
