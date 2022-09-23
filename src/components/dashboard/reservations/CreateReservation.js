@@ -267,9 +267,8 @@ const CreateReservation = ({ reservation }) => {
           >
             <DatePicker
               showTime={{
-                defaultValue: moment("00:00:00", "HH:mm:ss"),
-                format: "HH:mm",
-                minuteStep: 30,
+                defaultValue: moment("08", "HH"),
+                format: "HH",
                 hideDisabledOptions: true,
               }}
               format="YYYY-MM-DD HH:mm"
