@@ -5,7 +5,7 @@ import React, { useState } from "react";
 
 //redux
 import { useDispatch } from "react-redux";
-import { addUser } from "../../../features/admins/adminSlice";
+import { addUser, updateUser } from "../../../features/admins/adminSlice";
 
 const AddUser = ({ user }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,13 +25,27 @@ const AddUser = ({ user }) => {
   }
 
   const onFinish = (values) => {
-    dispatch(
-      addUser({
-        email: values.email,
-        firstName: values.firstname,
-        lastName: values.lastname,
-      })
-    );
+    if (user) {
+      dispatch(
+        updateUser({
+          id: user.id,
+          user: {
+            email: values.email,
+            firstName: values.firstname,
+            lastName: values.lastname,
+          },
+        })
+      );
+    }
+    else {
+      dispatch(
+        addUser({
+          email: values.email,
+          firstName: values.firstname,
+          lastName: values.lastname,
+        })
+      );
+    }
     setIsModalOpen(false);
     form.resetFields();
   };
