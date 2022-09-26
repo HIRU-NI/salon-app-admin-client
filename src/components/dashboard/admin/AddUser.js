@@ -5,9 +5,13 @@ import React, { useState } from "react";
 
 //redux
 import { useDispatch } from "react-redux";
-import { addUser, updateUser } from "../../../features/admins/adminSlice";
+import {
+  addUser,
+  updateUser,
+  resetPassword,
+} from "../../../features/admins/adminSlice";
 
-const AddUser = ({ user }) => {
+const AddUser = ({ user, isReset }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [form] = Form.useForm();
@@ -25,7 +29,14 @@ const AddUser = ({ user }) => {
   }
 
   const onFinish = (values) => {
-    if (user) {
+    if (isReset) {
+      dispatch(
+        resetPassword({
+          id: user.id,
+          password: values.password,
+        })
+      );
+    } else if (user) {
       dispatch(
         updateUser({
           id: user.id,
@@ -49,7 +60,7 @@ const AddUser = ({ user }) => {
   };
 
   const showModal = () => {
-    if (!user) form.resetFields();
+    if (!user || isReset) form.resetFields();
     setIsModalOpen(true);
   };
 
@@ -64,21 +75,22 @@ const AddUser = ({ user }) => {
   return (
     <div style={{ marginBottom: "20px" }}>
       <Button type={user ? "dashed" : "primary"} onClick={showModal}>
-        {user ? "Edit" : "Add New User"}
+        {isReset ? "Reset Password" : user ? "Edit" : "Add New User"}
       </Button>
       <Modal
-        title={user ? "Update User" : "Add New User"}
+        title={isReset ? "Reset Password" : user ? "Edit" : "Add New User"}
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
       >
         <Form
+          autoCorrect="off"
           onFinish={onFinish}
-          validateTrigger="onBlur"
+          validateTrigger={isReset ? "onChange" : "onBlur"}
           form={form}
           name="add-user"
           labelCol={{
-            span: 6,
+            span: isReset ? 8 : 6,
           }}
           wrapperCol={{
             span: 16,
@@ -88,46 +100,93 @@ const AddUser = ({ user }) => {
           //   onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              {
-                type: "email",
-                message: "The input is not valid E-mail!",
-              },
-              {
-                required: true,
-                message: "Please input your E-mail!",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="First Name"
-            name="firstname"
-            rules={[
-              {
-                required: true,
-                message: "Please input your first name!",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Last Name"
-            name="lastname"
-            rules={[
-              {
-                required: true,
-                message: "Please input your last name!",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
+          {!isReset ? (
+            <>
+              <Form.Item
+                label="Email"
+                name="email"
+                rules={[
+                  {
+                    type: "email",
+                    message: "The input is not valid E-mail!",
+                  },
+                  {
+                    required: true,
+                    message: "Please input your E-mail!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="First Name"
+                name="firstname"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your first name!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="Last Name"
+                name="lastname"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your last name!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </>
+          ) : (
+            <>
+              <Form.Item
+                name="password"
+                label="Password"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your password!",
+                  },
+                ]}
+                hasFeedback
+              >
+                <Input.Password />
+              </Form.Item>
+
+              <Form.Item
+                name="confirm"
+                label="Confirm Password"
+                dependencies={["password"]}
+                hasFeedback
+                rules={[
+                  {
+                    required: true,
+                    message: "Please confirm your password!",
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue("password") === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        new Error(
+                          "The two passwords that you entered do not match!"
+                        )
+                      );
+                    },
+                  }),
+                ]}
+              >
+                <Input.Password />
+              </Form.Item>
+            </>
+          )}
         </Form>
       </Modal>
     </div>

@@ -33,7 +33,7 @@ const columns = [
     render: (_, record) => (
       <Space size="middle">
         <AddUser user={record}/>
-        <AddUser user={record}/>
+        <AddUser user={record} isReset />
       </Space>
     ),
   },

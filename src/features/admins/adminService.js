@@ -27,14 +27,26 @@ const addUser = async (token, userData) => {
 
 //update user
 const updateUser = async (token, id, user) => {
-    console.log(token)
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     };
-    console.log(id)
+    
     const response = await axios.put(API_URL + `/${id}`, user, config);
+    return response.data;
+  };
+
+  //reset password
+const reset = async (token, id, password) => {
+    
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+   
+    const response = await axios.post(API_URL + `/${id}`, {password}, config);
     return response.data;
   };
   
@@ -43,6 +55,7 @@ const adminService = {
   getAllAdmins,
   addUser,
   updateUser,
+  reset
 };
 
 export default adminService;
