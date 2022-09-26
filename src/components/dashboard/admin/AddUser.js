@@ -36,8 +36,7 @@ const AddUser = ({ user }) => {
           },
         })
       );
-    }
-    else {
+    } else {
       dispatch(
         addUser({
           email: values.email,
@@ -47,12 +46,11 @@ const AddUser = ({ user }) => {
       );
     }
     setIsModalOpen(false);
-    form.resetFields();
   };
 
   const showModal = () => {
+    if (!user) form.resetFields();
     setIsModalOpen(true);
-    form.resetFields();
   };
 
   const handleOk = () => {
@@ -61,7 +59,6 @@ const AddUser = ({ user }) => {
 
   const handleCancel = () => {
     setIsModalOpen(false);
-    form.resetFields();
   };
 
   return (
