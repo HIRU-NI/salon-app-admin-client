@@ -96,16 +96,7 @@ const Login = () => {
       >
         <Input.Password />
       </Form.Item>
-      <Form.Item
-        wrapperCol={{
-          offset: 8,
-          span: 16,
-        }}
-      >
-        <a href="/login">
-          Forgot password?
-        </a>
-      </Form.Item>
+     
       <Form.Item
         wrapperCol={{
           offset: 8,
