@@ -68,8 +68,6 @@ const CreateClient = () => {
           initialValues={{
             remember: true,
           }}
-          //   onFinish={onFinish}
-          //   onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           <Form.Item

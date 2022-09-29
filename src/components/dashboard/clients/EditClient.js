@@ -76,8 +76,6 @@ const EditClient = ({ client }) => {
           wrapperCol={{
             span: 16,
           }}
-          //   onFinish={onFinish}
-          //   onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           <Form.Item

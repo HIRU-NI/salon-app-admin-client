@@ -96,8 +96,6 @@ const AddUser = ({ user, isReset }) => {
             span: 16,
           }}
           initialValues={initialValues}
-          //   onFinish={onFinish}
-          //   onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           {!isReset ? (

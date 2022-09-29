@@ -125,13 +125,10 @@ const CreateReservation = ({ reservation }) => {
       ).length >= 8
     ) {
       //creating a new reservation
-      if (!reservation)
+      if (!reservation || moment(reservation.date).diff(date, "days") !== 0)
         availabilityMessage =
           "The selected stylist is not available on the given date";
-      //updating an existing reservation
-      else if (moment(reservation.date).diff(date, "days") !== 0)
-        availabilityMessage =
-          "The selected stylist is not available on the given date";
+     
     }
 
     return availabilityMessage;
@@ -253,7 +250,6 @@ const CreateReservation = ({ reservation }) => {
                 );
               })}
             </Select>
-            {/* {availabilityMessage ? <Tag color="volcano" style={{marginTop: "10px"}}>{availabilityMessage}</Tag> : <></>} */}
           </Form.Item>
           <Form.Item
             label="Date & Time"
