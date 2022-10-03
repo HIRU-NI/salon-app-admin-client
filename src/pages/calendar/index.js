@@ -81,6 +81,7 @@ const ReservationsCalendar = () => {
         droppableId={value.toString()}
         key={value.toString()}
         index={value.toString()}
+        isDropDisabled={moment(value).isBefore(moment(), "days")}
       >
         {(provided, snapshot) => {
           return (
@@ -102,6 +103,7 @@ const ReservationsCalendar = () => {
                       draggableId={item.id}
                       index={index + 1}
                       key={item.id}
+                      isDragDisabled={moment(value).isBefore(moment(), "days")}
                     >
                       {(provided, snapshot) => {
                         let content = <></>;
