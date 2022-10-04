@@ -34,6 +34,7 @@ const getListData = (value, reservations, services, clients) => {
     const service = services.find(
       (service) => service._id === reservation.service
     );
+    const client = clients.find(client => client._id === reservation.client)
     if (moment(reservation.date).isSame(value, "day") && service) {
       return {
         content: service.name,
@@ -41,6 +42,8 @@ const getListData = (value, reservations, services, clients) => {
         id: reservation._id,
         date: moment(reservation.date).format("DD/MM/YY, hh:mm A"),
         client: reservation.client,
+        clientName: client.firstName,
+        time: moment(reservation.date).format("hh:mm A")
       };
     }
     return null;
@@ -142,7 +145,7 @@ const ReservationsCalendar = () => {
                                         : "",
                                     }}
                                   >
-                                    {item.content}
+                                    {item.content} - {item.clientName} - {item.time}
                                   </span>
                                 }
                                 className={
