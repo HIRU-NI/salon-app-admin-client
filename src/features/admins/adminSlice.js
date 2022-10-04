@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 
 import adminService from "./adminService";
 
@@ -89,7 +90,7 @@ export const adminSlice = createSlice({
       .addCase(addUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.admins.push(action.payload);
+        toast.success(`An invitation has been sent to ${action.payload.email}`)
       })
       .addCase(addUser.rejected, (state, action) => {
         state.isLoading = false;
