@@ -40,6 +40,7 @@ const disabledTime = (now) => ({
 
 const CreateReservation = ({ reservation }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [unAvailableStylists, setunAvailableStylists] = useState([]);
 
   const [form] = Form.useForm();
 
@@ -128,7 +129,6 @@ const CreateReservation = ({ reservation }) => {
       if (!reservation || moment(reservation.date).diff(date, "days") !== 0)
         availabilityMessage =
           "The selected stylist is not available on the given date";
-     
     }
 
     return availabilityMessage;
@@ -150,6 +150,20 @@ const CreateReservation = ({ reservation }) => {
     setIsModalOpen(false);
     form.resetFields();
   };
+
+  //checks weather the stylist is available in the given time slots
+  const checkIsDisabled = (stylist) =>  {
+    if(unAvailableStylists && unAvailableStylists.includes(stylist._id)) return true
+  }
+
+  //find all the stylists that are occupied in the given timeslot
+  const checkAvailableStylists = () => {
+    
+    const stylists = reservations.filter(res => moment(res.date).isSame(form.getFieldValue('date'),"minutes"))
+    
+    setunAvailableStylists(stylists.map(res => res.stylist))
+
+  }
 
   return (
     <div style={{ marginBottom: !reservation ? "20px" : "" }}>
@@ -220,12 +234,36 @@ const CreateReservation = ({ reservation }) => {
             >
               {clients.map((client) => {
                 return (
-                  <Option value={client._id} key={client._id}>
+                  <Option value={client._id} key={client._id} >
                     {client.firstName} {client.lastName}
                   </Option>
                 );
               })}
             </Select>
+          </Form.Item>
+          <Form.Item
+            label="Date & Time"
+            name="date"
+            rules={[
+              {
+                required: true,
+                message: "Please select a date and time!",
+              },
+            ]}
+            
+          >
+            <DatePicker
+              showTime={{
+                defaultValue: moment("08", "HH"),
+                format: "HH",
+                hideDisabledOptions: true,
+              }}
+              format="YYYY-MM-DD HH:mm"
+              disabledDate={disabledDate}
+              disabledTime={disabledTime}
+              showNow={false}
+              onChange={checkAvailableStylists}
+            />
           </Form.Item>
           <Form.Item
             label="Stylist"
@@ -243,36 +281,16 @@ const CreateReservation = ({ reservation }) => {
               optionFilterProp="children"
             >
               {stylists.map((stylist) => {
+
                 return (
-                  <Option value={stylist._id} key={stylist._id}>
+                  <Option value={stylist._id} key={stylist._id} disabled={checkIsDisabled(stylist)}>
                     {stylist.name}
                   </Option>
                 );
               })}
             </Select>
           </Form.Item>
-          <Form.Item
-            label="Date & Time"
-            name="date"
-            rules={[
-              {
-                required: true,
-                message: "Please select a date and time!",
-              },
-            ]}
-          >
-            <DatePicker
-              showTime={{
-                defaultValue: moment("08", "HH"),
-                format: "HH",
-                hideDisabledOptions: true,
-              }}
-              format="YYYY-MM-DD HH:mm"
-              disabledDate={disabledDate}
-              disabledTime={disabledTime}
-              showNow={false}
-            />
-          </Form.Item>
+
           {reservation ? (
             <Form.Item label="Status" name="isComplete">
               <Select
