@@ -1,5 +1,5 @@
 //antd components
-import { Table, Space } from "antd";
+import { Table } from "antd";
 
 import { React, useEffect } from "react";
 
@@ -26,17 +26,7 @@ const columns = [
     title: "Email",
     dataIndex: "email",
     key: "email",
-  },
-  {
-    title: 'Action',
-    key: 'action',
-    render: (_, record) => (
-      <Space size="middle">
-        <AddUser user={record}/>
-        <AddUser user={record} isReset />
-      </Space>
-    ),
-  },
+  }
 ];
 
 const Admins = () => {
