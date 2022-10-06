@@ -4,7 +4,7 @@ import {
   CalendarOutlined,
   AppstoreOutlined,
   UsergroupAddOutlined,
-  ProfileOutlined
+  ProfileOutlined,
 } from "@ant-design/icons";
 import React from "react";
 
@@ -66,7 +66,6 @@ const Sidebar = ({ selectedNav }) => {
         label: nav.name,
         onClick: () => {
           navigate(nav.path);
-          console.log(nav.path)
         },
       }))}
     />
