@@ -39,19 +39,20 @@ export const addUser = createAsyncThunk(
   }
 );
 
-//update user
-export const updateUser = createAsyncThunk(
-  "updateuser",
-  async (userData, thunkAPI) => {
-    try {
-      const token = thunkAPI.getState().auth.user.token;
-      return await adminService.updateUser(token, userData.id, userData.user);
-    } catch (error) {
-      const message = error.response.data || error.message || error.toString();
-      return thunkAPI.rejectWithValue(message);
-    }
-  }
-);
+// //update user
+// export const updateUser = createAsyncThunk(
+//   "updateuser",
+//   async (userData, thunkAPI) => {
+//     try {
+//       const token = thunkAPI.getState().auth.user.token;
+//       console.log(userData)
+//       return await adminService.updateUser(token, userData.id, userData.user);
+//     } catch (error) {
+//       const message = error.response.data || error.message || error.toString();
+//       return thunkAPI.rejectWithValue(message);
+//     }
+//   }
+// );
 
 //reset password
 export const resetPassword = createAsyncThunk(
@@ -110,28 +111,28 @@ export const adminSlice = createSlice({
         state.isLoading = false;
         state.message = action.payload;
       })
-      .addCase(updateUser.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(updateUser.fulfilled, (state, action) => {
-        state.isSuccess = true;
-        state.isLoading = false;
-        state.admins = state.admins.map((admin) => {
-          return admin._id === action.payload._id
-            ? {
-                ...admin,
-                email: action.payload.email,
-                firstName: action.payload.firstName,
-                lastName: action.payload.lastName,
-              }
-            : admin;
-        });
-      })
-      .addCase(updateUser.rejected, (state, action) => {
-        state.isError = true;
-        state.isLoading = false;
-        state.message = action.payload;
-      })
+      // .addCase(updateUser.pending, (state) => {
+      //   state.isLoading = true;
+      // })
+      // .addCase(updateUser.fulfilled, (state, action) => {
+      //   state.isSuccess = true;
+      //   state.isLoading = false;
+      //   state.admins = state.admins.map((admin) => {
+      //     return admin._id === action.payload._id
+      //       ? {
+      //           ...admin,
+      //           email: action.payload.email,
+      //           firstName: action.payload.firstName,
+      //           lastName: action.payload.lastName,
+      //         }
+      //       : admin;
+      //   });
+      // })
+      // .addCase(updateUser.rejected, (state, action) => {
+      //   state.isError = true;
+      //   state.isLoading = false;
+      //   state.message = action.payload;
+      // })
       .addCase(resetPassword.pending, (state) => {
         state.isLoading = true;
       })

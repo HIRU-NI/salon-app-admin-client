@@ -7,9 +7,9 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import {
   addUser,
-  updateUser,
   resetPassword,
 } from "../../../features/admins/adminSlice";
+import { updateUser } from "../../../features/auth/authSlice";
 
 const AddUser = ({ user, isReset }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
