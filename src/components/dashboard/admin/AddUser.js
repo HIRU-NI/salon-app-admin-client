@@ -74,7 +74,7 @@ const AddUser = ({ user, isReset }) => {
 
   return (
     <div style={{ marginBottom: "20px" }}>
-      <Button type={user ? "dashed" : "primary"} onClick={showModal}>
+      <Button type={!user || isReset? "primary" : "dashed"} onClick={showModal}>
         {isReset ? "Reset Password" : user ? "Edit" : "Add New User"}
       </Button>
       <Modal

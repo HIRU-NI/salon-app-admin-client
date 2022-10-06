@@ -13,10 +13,12 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 //antd components
-import { Button, Form, Input, Spin } from "antd";
+import { Button, Form, Input, Spin, Row, Col } from "antd";
 
 //styles
 import "../../assests/styles/signup.css";
+
+import AddUser from "../../components/dashboard/admin/AddUser"
 
 const Account = () => {
   const navigate = useNavigate();
@@ -56,74 +58,83 @@ const Account = () => {
   };
 
   return (
-    <Form
-      form={form}
-      className="signup_main"
-      name="basic"
-      validateTrigger="onBlur"
-      labelCol={{
-        span: 8,
-      }}
-      wrapperCol={{
-        span: 16,
-      }}
-      initialValues={initialValues}
-      onFinish={onFinish}
-    >
-      <Form.Item
-        label="Email"
-        name="email"
-        rules={[
-          {
-            type: "email",
-            message: "The input is not valid E-mail!",
-          },
-          {
-            required: true,
-            message: "Please input your E-mail!",
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        label="First Name"
-        name="firstname"
-        rules={[
-          {
-            required: true,
-            message: "Please input your first name!",
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        label="Last Name"
-        name="lastname"
-        rules={[
-          {
-            required: true,
-            message: "Please input your last name!",
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
+    <>
+      <Row justify="end">
+        <Col >
+          <AddUser isReset user={user}/>
+        </Col>
+      </Row>
+      
+        <Form
+          form={form}
+          className="signup_main"
+          name="basic"
+          validateTrigger="onBlur"
+          labelCol={{
+            span: 8,
+          }}
+          wrapperCol={{
+            span: 16,
+          }}
+          initialValues={initialValues}
+          onFinish={onFinish}
+        >
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[
+              {
+                type: "email",
+                message: "The input is not valid E-mail!",
+              },
+              {
+                required: true,
+                message: "Please input your E-mail!",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="First Name"
+            name="firstname"
+            rules={[
+              {
+                required: true,
+                message: "Please input your first name!",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Last Name"
+            name="lastname"
+            rules={[
+              {
+                required: true,
+                message: "Please input your last name!",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
 
-      <Form.Item
-        wrapperCol={{
-          offset: 8,
-          span: 16,
-        }}
-      >
-        <Spin spinning={isLoading}>
-          <Button type="primary" htmlType="submit">
-            Save Changes
-          </Button>
-        </Spin>
-      </Form.Item>
-    </Form>
+          <Form.Item
+            wrapperCol={{
+              offset: 8,
+              span: 16,
+            }}
+          >
+            <Spin spinning={isLoading}>
+              <Button type="primary" htmlType="submit">
+                Save Changes
+              </Button>
+            </Spin>
+          </Form.Item>
+        </Form>
+      
+    </>
   );
 };
 
