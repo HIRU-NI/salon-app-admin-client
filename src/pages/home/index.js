@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { Col, Row, Card } from "antd";
 
-import { Pie, Bar } from "@ant-design/plots";
+import { Pie, Column } from "@ant-design/plots";
 import {
   getAllReservations,
   reset,
@@ -58,37 +58,72 @@ const getPieChartConfiguration = (reservations) => {
 };
 
 const getBarChartConfiguration = (reservations, stylists) => {
-  let stylistsToday = reservations.filter(
-    (res) => moment(res.date).isSame(moment(), "days")
-  )
+  // let stylistsThisWeek = reservations.filter((res) =>
+  //   moment(res.date).isSame(moment(), "week")
+  // );
 
-  stylistsToday = stylistsToday.map(res => res.stylist)
-  
-  const barChartData = stylistsToday.map((stylist) => {
-    const currentStylist = stylists.find((stlst) => stlst._id === stylist);
-    const reservationsToday = reservations.filter(
-      (res) =>
-        moment(res.date).isSame(moment(), "days") && res.stylist === stylist
-    );
-    return {
-      stylist: currentStylist ? currentStylist.name : "",
-      value: reservationsToday.length,
-    };
+  // stylistsThisWeek = stylistsThisWeek.map((res) => res.stylist);
+
+  // const barChartData = stylistsThisWeek.map((stylist) => {
+  //   const currentStylist = stylists.find((stlst) => stlst._id === stylist);
+  //   const reservationsThisWeek = reservations.filter(
+  //     (res) =>
+  //       moment(res.date).isSame(moment(), "week") && res.stylist === stylist
+  //   );
+  //   return {
+  //     day:
+  //     stylist: currentStylist ? currentStylist.name : "",
+  //     value: reservationsThisWeek.length,
+  //   };
+  // });
+
+  var startOfWeek = moment().startOf("week");
+  var endOfWeek = moment().endOf("week");
+
+  var daysOfWeek = [];
+  var day = startOfWeek;
+
+  while (day <= endOfWeek) {
+    daysOfWeek.push(day.toDate());
+    day = day.clone().add(1, "d");
+  }
+
+  let barChartData = [];
+
+  stylists.forEach((stylist) => {
+    daysOfWeek.forEach(day => {
+      barChartData.push({
+        stylist: stylist.name,
+        day: moment(day).format('dddd'),
+        count: reservations.filter(res => moment(res.date).isSame(day, 'date') && stylist._id === res.stylist).length
+      })
+    })
   });
+
+  console.log(barChartData)
 
   const configBar = {
     data: barChartData,
-    xField: "value",
-    yField: "stylist",
+    isGroup: true,
+    xField: "day",
+    yField: "count",
     seriesField: "stylist",
-    legend: {
-      position: "top-left",
+    color: ["#1ca9e6", "#f88c24"],
+    label: {
+      position: "middle",
+
+      layout: [
+        {
+          type: "interval-adjust-position",
+        },
+        {
+          type: "interval-hide-overlap",
+        },
+        {
+          type: "adjust-color",
+        },
+      ],
     },
-    meta: {
-      value: {
-        values: [0,8]
-      }
-    }
   };
 
   return configBar;
@@ -111,8 +146,8 @@ const Home = () => {
     if (!user) navigate("/login");
 
     if (user) {
-      dispatch(getAllReservations())
-      dispatch(getAllStylists())
+      dispatch(getAllReservations());
+      dispatch(getAllStylists());
     }
 
     return () => {
@@ -130,7 +165,7 @@ const Home = () => {
         </Col>
         <Col span={12}>
           <Card title="Stylist Allocations">
-            <Bar {...getBarChartConfiguration(reservations, stylists)} />
+            <Column {...getBarChartConfiguration(reservations, stylists)} />
           </Card>
         </Col>
       </Row>
