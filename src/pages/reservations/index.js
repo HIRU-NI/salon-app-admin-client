@@ -188,7 +188,7 @@ const Reservations = () => {
         pagination={{
           total: count,
           onChange: onPageChange,
-          current: currentPage,
+          current: currentPage +1,
         }}
       />
     </>
