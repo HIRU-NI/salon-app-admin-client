@@ -46,7 +46,6 @@ export const getPage = createAsyncThunk(
   "getpagereservations",
   async (page, thunkAPI) => {
     try {
-      console.log(page);
       const token = thunkAPI.getState().auth.user.token;
       return await reservationService.getPage(token, page);
     } catch (error) {
