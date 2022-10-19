@@ -18,6 +18,8 @@ import { toast } from "react-toastify";
 //search box
 const { Search } = Input;
 
+const DEFAULT_SORT = "createdAt"
+
 const Clients = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -30,7 +32,7 @@ const Clients = () => {
   );
 
   const [currentPage, setcurrentPage] = useState(0);
-  const [sortby, setsortBy] = useState("createdAt");
+  const [sortby, setsortBy] = useState(DEFAULT_SORT);
 
   const columns = [
     {
@@ -39,7 +41,8 @@ const Clients = () => {
       key: "name",
       render: (text) => <div>{text}</div>,
       sorter: (_, __) => {
-        setsortBy("firstName");
+        if (sortby !== "firstName") setsortBy("firstName");
+        else setsortBy(DEFAULT_SORT)
       },
     },
     {
