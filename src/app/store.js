@@ -5,6 +5,7 @@ import reservationReducer from '../features/reservations/reservationSlice'
 import stylistReducer from '../features/stylists/stylistSlice'
 import serviceReducer from '../features/services/serviceSlice'
 import adminReducer from "../features/admins/adminSlice"
+import summaryReducer from "../features/summary/summarySlice"
 
 export const store = configureStore({
     reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
         stylist: stylistReducer,
         service: serviceReducer,
         reservation: reservationReducer,
-        admin: adminReducer
+        admin: adminReducer,
+        summary: summaryReducer
     }
 })

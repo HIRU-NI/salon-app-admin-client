@@ -5,16 +5,16 @@ import { useNavigate } from "react-router-dom";
 //redux
 import { useSelector, useDispatch } from "react-redux";
 
-import { Col, Row, Card } from "antd";
+import { Col, Row, Card, Table } from "antd";
 
-import { Pie, Column } from "@ant-design/plots";
+import { Pie } from "@ant-design/plots";
 import {
   getAllReservations,
   reset,
 } from "../../features/reservations/reservationSlice";
 import { toast } from "react-toastify";
-import moment from "moment";
 import { getAllStylists } from "../../features/stylists/stylistSlice";
+import { getCurrentWeekAllocations } from "../../features/summary/summarySlice";
 
 const getPieChartConfiguration = (reservations) => {
   const pieChartData = [
@@ -56,85 +56,121 @@ const getPieChartConfiguration = (reservations) => {
 
   return configPie;
 };
+// const barChartData = stylistsThisWeek.map((stylist) => {
+//   //   const currentStylist = stylists.find((stlst) => stlst._id === stylist);
+//   //   const reservationsThisWeek = reservations.filter(
+//   //     (res) =>
+//   //       moment(res.date).isSame(moment(), "week") && res.stylist === stylist
+//   //   );
+//   //   return {
+//   //     day:
+//   //     stylist: currentStylist ? currentStylist.name : "",
+//   //     value: reservationsThisWeek.length,
+//   //   };
+//   // });
 
-const getBarChartConfiguration = (reservations, stylists) => {
-  // let stylistsThisWeek = reservations.filter((res) =>
-  //   moment(res.date).isSame(moment(), "week")
-  // );
+//   var startOfWeek = moment().startOf("week");
+//   var endOfWeek = moment().endOf("week");
 
-  // stylistsThisWeek = stylistsThisWeek.map((res) => res.stylist);
+//   var daysOfWeek = [];
+//   var day = startOfWeek;
 
-  // const barChartData = stylistsThisWeek.map((stylist) => {
-  //   const currentStylist = stylists.find((stlst) => stlst._id === stylist);
-  //   const reservationsThisWeek = reservations.filter(
-  //     (res) =>
-  //       moment(res.date).isSame(moment(), "week") && res.stylist === stylist
-  //   );
-  //   return {
-  //     day:
-  //     stylist: currentStylist ? currentStylist.name : "",
-  //     value: reservationsThisWeek.length,
-  //   };
-  // });
+//   while (day <= endOfWeek) {
+//     daysOfWeek.push(day.toDate());
+//     day = day.clone().add(1, "d");
+//   }
 
-  var startOfWeek = moment().startOf("week");
-  var endOfWeek = moment().endOf("week");
+//   let barChartData = [];
 
-  var daysOfWeek = [];
-  var day = startOfWeek;
+//   stylists.forEach((stylist) => {
+//     daysOfWeek.forEach((day) => {
+//       barChartData.push({
+//         stylist: stylist.name,
+//         day: moment(day).format("dddd"),
+//         count: reservations.filter(
+//           (res) =>
+//             moment(res.date).isSame(day, "date") && stylist._id === res.stylist
+//         ).length,
+//       });
+//     });
+//   });
 
-  while (day <= endOfWeek) {
-    daysOfWeek.push(day.toDate());
-    day = day.clone().add(1, "d");
-  }
+//   const configBar = {
+//     data: barChartData,
+//     isGroup: true,
+//     xField: "day",
+//     yField: "count",
+//     seriesField: "stylist",
+//     color: ["#1ca9e6", "#f88c24"],
+//     label: {
+//       position: "middle",
 
-  let barChartData = [];
+//       layout: [
+//         {
+//           type: "interval-adjust-position",
+//         },
+//         {
+//           type: "interval-hide-overlap",
+//         },
+//         {
+//           type: "adjust-color",
+//         },
+//       ],
+//     },
+//   };
 
-  stylists.forEach((stylist) => {
-    daysOfWeek.forEach(day => {
-      barChartData.push({
-        stylist: stylist.name,
-        day: moment(day).format('dddd'),
-        count: reservations.filter(res => moment(res.date).isSame(day, 'date') && stylist._id === res.stylist).length
-      })
-    })
-  });
+//   return configBar;
+// };
 
-  console.log(barChartData)
-
-  const configBar = {
-    data: barChartData,
-    isGroup: true,
-    xField: "day",
-    yField: "count",
-    seriesField: "stylist",
-    color: ["#1ca9e6", "#f88c24"],
-    label: {
-      position: "middle",
-
-      layout: [
-        {
-          type: "interval-adjust-position",
-        },
-        {
-          type: "interval-hide-overlap",
-        },
-        {
-          type: "adjust-color",
-        },
-      ],
-    },
-  };
-
-  return configBar;
-};
+const columns = [
+  {
+    title: "Stylist",
+    dataIndex: "stylist",
+    key: "stylist",
+  },
+  {
+    title: "Sunday",
+    dataIndex: "sunday",
+    key: "sunday",
+  },
+  {
+    title: "Monday",
+    dataIndex: "monday",
+    key: "monday",
+  },
+  {
+    title: "Tuesday",
+    dataIndex: "tuesday",
+    key: "tuesday",
+  },
+  {
+    title: "Wednesday",
+    dataIndex: "wednesday",
+    key: "wednesday",
+  },
+  {
+    title: "Thursday",
+    dataIndex: "thursday",
+    key: "thursday",
+  },
+  {
+    title: "Friday",
+    dataIndex: "friday",
+    key: "friday",
+  },
+  {
+    title: "Saturday",
+    dataIndex: "saturday",
+    key: "saturday",
+  },
+];
 
 const Home = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.auth);
-  const { stylists } = useSelector((state) => state.stylist);
+  const { allocations } = useSelector((state) => state.summary);
   const { reservations, isError, message } = useSelector(
     (state) => state.reservation
   );
@@ -146,6 +182,7 @@ const Home = () => {
     if (!user) navigate("/login");
 
     if (user) {
+      dispatch(getCurrentWeekAllocations())
       dispatch(getAllReservations());
       dispatch(getAllStylists());
     }
@@ -157,15 +194,16 @@ const Home = () => {
 
   return (
     <div>
-      <Row gutter={16}>
-        <Col span={12}>
+      <Row gutter={[16,16]}>
+        <Col span={24}>
           <Card title="Reservation Status">
             <Pie {...getPieChartConfiguration(reservations)} />
           </Card>
         </Col>
-        <Col span={12}>
+        <Col span={24}>
           <Card title="Stylist Allocations">
-            <Column {...getBarChartConfiguration(reservations, stylists)} />
+            {/* <Column {...getBarChartConfiguration(reservations, stylists)} /> */}
+            <Table columns={columns} dataSource={allocations}/>
           </Card>
         </Col>
       </Row>
