@@ -14,21 +14,20 @@ import {
 } from "../../features/reservations/reservationSlice";
 import { toast } from "react-toastify";
 import { getAllStylists } from "../../features/stylists/stylistSlice";
-import { getCurrentWeekAllocations } from "../../features/summary/summarySlice";
+import {
+  getCurrentWeekAllocations,
+  getStatusSummary,
+} from "../../features/summary/summarySlice";
 
-const getPieChartConfiguration = (reservations) => {
+const getPieChartConfiguration = (status) => {
   const pieChartData = [
     {
       type: "Scheduled",
-      value: reservations.filter(
-        (reservation) => reservation.isComplete === false
-      ).length,
+      value: status.scheduled,
     },
     {
       type: "Completed",
-      value: reservations.filter(
-        (reservation) => reservation.isComplete === true
-      ).length,
+      value: status.completed,
     },
   ];
 
@@ -170,9 +169,8 @@ const Home = () => {
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.auth);
-  const { allocations } = useSelector((state) => state.summary);
-  const { reservations, isError, message } = useSelector(
-    (state) => state.reservation
+  const { allocations, status, isError, message } = useSelector(
+    (state) => state.summary
   );
 
   useEffect(() => {
@@ -182,7 +180,8 @@ const Home = () => {
     if (!user) navigate("/login");
 
     if (user) {
-      dispatch(getCurrentWeekAllocations())
+      dispatch(getCurrentWeekAllocations());
+      dispatch(getStatusSummary());
       dispatch(getAllReservations());
       dispatch(getAllStylists());
     }
@@ -194,16 +193,16 @@ const Home = () => {
 
   return (
     <div>
-      <Row gutter={[16,16]}>
+      <Row gutter={[16, 16]}>
         <Col span={24}>
           <Card title="Reservation Status">
-            <Pie {...getPieChartConfiguration(reservations)} />
+            <Pie {...getPieChartConfiguration(status)} />
           </Card>
         </Col>
         <Col span={24}>
           <Card title="Stylist Allocations">
             {/* <Column {...getBarChartConfiguration(reservations, stylists)} /> */}
-            <Table columns={columns} dataSource={allocations}/>
+            <Table columns={columns} dataSource={allocations} />
           </Card>
         </Col>
       </Row>
