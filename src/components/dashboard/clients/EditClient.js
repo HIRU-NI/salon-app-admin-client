@@ -36,12 +36,12 @@ const EditClient = ({ client }) => {
     );
 
     setIsModalOpen(false);
-    form.resetFields();
   };
 
   const showModal = () => {
-    setIsModalOpen(true);
+    console.log(client)
     form.resetFields();
+    setIsModalOpen(true);
   };
 
   const handleOk = () => {
@@ -50,7 +50,6 @@ const EditClient = ({ client }) => {
 
   const handleCancel = () => {
     setIsModalOpen(false);
-    form.resetFields();
   };
 
   return (
@@ -59,7 +58,7 @@ const EditClient = ({ client }) => {
         Edit
       </Button>
       <Modal
-        title="Add New Client"
+        title="Edit Client Details"
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
